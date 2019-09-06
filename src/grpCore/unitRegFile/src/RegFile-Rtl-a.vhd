@@ -12,8 +12,19 @@
 
 architecture rtl of RegFile is
     
+    type aRegFile is array (0 to cRegCount - 1) of aRegValue;
+
+    -- register File storage
+    signal regFile : aRegFile := (others => (others => '0'));
+
+    -- program counter
+    signal progCnt : aRegValue := (others => '0');
+
 begin
     
 
+
+
+oPC <= progCnt;
     
 end architecture rtl;

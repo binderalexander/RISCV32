@@ -18,6 +18,10 @@ use work.RISCV.all;
 
 entity RegFile is
     port (
-        
+        iClk                : in  std_ulogic;
+        iWE1, iWEPC         : in  std_ulogic;
+        iWD1, iWDPC         : in  aRegValue;
+        iRS1, iRS2, iRD1    : in  aRegAdr;
+        oRD1, oRD2 , oPC    : out aRegValue;
     );
 end entity RegFile;
