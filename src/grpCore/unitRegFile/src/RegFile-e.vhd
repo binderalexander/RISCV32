@@ -9,3 +9,15 @@
 -------------------------------------------------------------------------------
 -- Description:
 -------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+library work;
+use work.RISCV.all;
+
+entity RegFile is
+    port (
+        
+    );
+end entity RegFile;

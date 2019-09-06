@@ -9,3 +9,18 @@
 -------------------------------------------------------------------------------
 -- Description:
 -------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity tbRegFile is
+end entity tbRegFile;
+
+architecture bhv of tbRegFile is
+    
+begin
+
+UUT: entity work.RegFile(rtl)
+    port map()
+    
+end architecture bhv;
