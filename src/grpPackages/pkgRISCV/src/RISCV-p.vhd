@@ -27,6 +27,7 @@ package RISCV is
 
   subtype aRegValue   is std_ulogic_vector(cRegWidth - 1 downto 0);
   subtype aRegAdr     is std_ulogic_vector(cRegAdrWidth - 1 downto 0);
+  type aRegFile       is array (0 to RegCount - 1) of RegValue;
 
 end RISCV;
 

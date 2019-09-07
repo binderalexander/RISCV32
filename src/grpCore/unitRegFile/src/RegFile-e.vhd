@@ -19,9 +19,15 @@ use work.RISCV.all;
 entity RegFile is
     port (
         iClk                : in  std_ulogic;
-        iWE1, iWEPC         : in  std_ulogic;
-        iWD1, iWDPC         : in  aRegValue;
-        iRS1, iRS2, iRD1    : in  aRegAdr;
-        oRD1, oRD2 , oPC    : out aRegValue;
+        inRstAsync          : in  std_ulogic;
+
+        -- register addresses
+        iRs1, iRs2, iRd     : in  aRegAdr;
+        -- write enable
+        iWe                 : in  std_ulogic;
+        -- write data
+        iWd                 : in  aRegValue;
+        -- read data
+        oRd1, oRd2          : out aRegValue;
     );
 end entity RegFile;

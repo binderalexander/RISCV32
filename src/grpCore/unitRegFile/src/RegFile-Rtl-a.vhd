@@ -11,20 +11,32 @@
 -------------------------------------------------------------------------------
 
 architecture rtl of RegFile is
-    
-    type aRegFile is array (0 to cRegCount - 1) of aRegValue;
 
-    -- register File storage
-    signal regFile : aRegFile := (others => (others => '0'));
-
-    -- program counter
-    signal progCnt : aRegValue := (others => '0');
+    signal R, NxR : aRegFile;
+    constant cInitValR : aRegFile := (others => (others => '0'));
 
 begin
     
+Registers: process(iClk, inRstAsync)
+begin
+    if (inRstAsync = not('1')) then
+        R <= cInitValR;
+    elsif ( (iClk'event) and (iClk = '1') ) then
+        R <= NxR;
+    end if;
+end process;
 
+Comb: process (R, iWe, iWd, iRd)
+begin
+    NxR <= R;
+    -- write to register
+    if (iWe = '1') then
+        NxR(to_integer(unsigned(iRd))) <= iWd;
+    end if;
+end process;
 
+-- asynchronous register read
+oRd1 <= R(to_integer(unsigned(iRs1)));
+oRd2 <= R(to_integer(unsigned(iRs2)));
 
-oPC <= progCnt;
-    
 end architecture rtl;

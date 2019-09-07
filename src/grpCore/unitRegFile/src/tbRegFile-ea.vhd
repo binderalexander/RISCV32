@@ -17,10 +17,19 @@ entity tbRegFile is
 end entity tbRegFile;
 
 architecture bhv of tbRegFile is
-    
+    signal clk              : std_ulogic := '0';
+    signal reset            : std_ulogic := '1';
+    signal rs1, rs2, rd     : std_ulogic := '0';
+
 begin
 
+-- Clock Gen
+clk <= not(clk) after 10 ns;
+
 UUT: entity work.RegFile(rtl)
-    port map()
+    port map(
+        iClk => clk,
+        inRstAsync => reset
+    )
     
 end architecture bhv;
