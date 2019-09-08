@@ -21,13 +21,13 @@ package RISCV is
 -------------------------------------------------------------------------------
 -- RegFile
 -------------------------------------------------------------------------------
-  constant cRegWidth    : natural : 32;
-  constant cRegCount    : natural : 32;
-  constant cRegAdrWidth : natural : LogDualis(cRegCount);
+  constant cRegWidth    : natural := 32;
+  constant cRegCount    : natural := 32;
+  constant cRegAdrWidth : natural := LogDualis(cRegCount);
 
   subtype aRegValue   is std_ulogic_vector(cRegWidth - 1 downto 0);
   subtype aRegAdr     is std_ulogic_vector(cRegAdrWidth - 1 downto 0);
-  type aRegFile       is array (0 to RegCount - 1) of RegValue;
+  type aRegFile       is array (0 to cRegCount - 1) of aRegValue;
 
 end RISCV;
 

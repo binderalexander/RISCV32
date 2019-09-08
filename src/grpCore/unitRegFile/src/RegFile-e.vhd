@@ -12,6 +12,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library work;
 use work.RISCV.all;
@@ -28,6 +29,6 @@ entity RegFile is
         -- write data
         iWd                 : in  aRegValue;
         -- read data
-        oRd1, oRd2          : out aRegValue;
+        oRd1, oRd2          : out aRegValue
     );
 end entity RegFile;
