@@ -54,8 +54,10 @@ begin
             '0' after 60 ns,
             '1' after 200 ns;
 
-    rs1 <= "01011";
-    rs2 <= "00100";
+    rs1 <=  "01011" after 400 ns,
+            "00000" after 2000 ns;
+    rs2 <=  "00100" after 400 ns,
+            "00000" after 2000 ns;
 
     for i in 0 to 31 loop
         rd <= transport std_ulogic_vector(to_unsigned(i, aRegAdr'length)) after ((10 + i) * (30 ns));
