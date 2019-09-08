@@ -12,6 +12,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library work;
 use work.RISCV.all;
@@ -47,8 +48,20 @@ UUT: entity work.RegFile(rtl)
 Stimuli: process is
 begin
     reset <= '1' after 100 ns;
-    wait;
+
+    wd <= std_ulogic_vector(to_unsigned(16#1234FEDC#, aRegValue'length));
+    we <=   '1' after 20 ns,
+            '0' after 60 ns,
+            '1' after 200 ns;
+
+    rs1 <= "01011";
+    rs2 <= "00100";
+
+    for i in 0 to 31 loop
+        rd <= transport std_ulogic_vector(to_unsigned(i, aRegAdr'length)) after ((10 + i) * (30 ns));
+    end loop;
     
+    wait;    
 
 end process Stimuli;
 

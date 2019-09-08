@@ -30,7 +30,7 @@ Comb: process (R, iWe, iWd, iRd)
 begin
     NxR <= R;
     -- write to register
-    if (iWe = '1') then
+    if (iWe = '1' and iRd /= "00000") then
         NxR(to_integer(unsigned(iRd))) <= iWd;
     end if;
 end process;
