@@ -17,7 +17,7 @@ architecture rtl of RegFile is
 
 begin
     
-Registers: process(iClk, inRstAsync)
+Registers: process (iClk, inRstAsync)
 begin
     if (inRstAsync = not('1')) then
         R <= cInitValR;
