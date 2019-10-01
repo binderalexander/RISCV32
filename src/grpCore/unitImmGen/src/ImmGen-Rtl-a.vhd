@@ -55,7 +55,7 @@ begin
             NxR(19 downto 0) <= iInst(19 downto 12) & iInst(20) & iInst(30 downto 21) & '0';
             NxR(cImmLen - 1 downto 20) <= (others => iInst(31)); 
         when others => 
-            NxR <= (others => 'X'); -- TODO: handle illegal instruction
+            NxR <= (others => '0'); -- TODO: handle illegal instruction
             
     end case;
     
