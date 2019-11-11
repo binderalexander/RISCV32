@@ -1,0 +1,16 @@
+Inhalte der Bachelorarbeit
+
+RISC-V Allgemein, Instruction Set vorstellen
+
+Ansatz (FSMD?), Implementierung als ein riesigen Comb Process, Ein großes record für alle Register + eigenes record für RAM Blöcke
+-> Auf lesbarkeit achten
+-> ROM Speicher als M10k Block? RegFile M10k oder MLAB? vgl. Geschindigkeit Größe
+-> Avalon Bus, IP Core
+-> Nur Grundinstruktionset implementieren 
+
+Vergleich von Größe und Geschwindigkeit mit bereits bestehenden Designs
+
+Testen des Designs - Methodik, Automatisierte Simulation (HEX Files einlesen und einladen(anscheinden mit tcl möglich od. hardcoded in design oder mittels generic der ROM Inhalt speichern) und Instruktionen verifizieren) - Waveforms sollten nicht mehr betrachtet werden müssen, QSys RAM Baustein extern anhängen - Hex Files einladen und prüfen
+
+Design Verbessern durch Functions und Procedures für mehrfach vorhandene Elemente (Documentatation von Unterschieden in Codelänge, Syntheseergebnis, Geschwindigkeit des Designs) 
+Evtl. Erweiterung zu Pipelining möglich? FSMD design dafür geeignet?
