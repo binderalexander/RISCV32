@@ -38,6 +38,12 @@ begin
     NxRegFile <= RegFile;
 
     -------------------------------------------------------------------------------
+    -- Program Counter
+    -------------------------------------------------------------------------------
+    NxR.curPC <= std_ulogic_vector(to_unsigned(
+                        to_integer(unsigned(R.curPC)) + cPCIncrement, cPCWidth));
+
+    -------------------------------------------------------------------------------
     -- Register File
     -------------------------------------------------------------------------------
     if (iWe = '1' and iRd /= "00000") then
@@ -72,6 +78,28 @@ begin
             NxR.curImm(19 downto 0) <= R.curInstr(19 downto 12) & R.curInstr(20) & R.curInstr(30 downto 21) & '0';
         when others => 
             NxR.curImm <= (others => '0'); -- TODO: handle illegal instruction
+    end case;
+
+    -------------------------------------------------------------------------------
+    -- ALU
+    -------------------------------------------------------------------------------
+    case R.aluOp is
+        when cALUOpAND =>
+            NxR.aluRes <= R.regReadData1 AND R.aluDataB;
+        when cALUOpOR =>
+            NxR.aluRes <= R.regReadData1 OR R.aluDataB;
+        when cALUOpADD =>
+            NxR.aluRes <= std_ulogic_vector(to_unsigned(
+                to_integer(unsigned(R.regReadData1)) +
+                to_integer(unsigned(R.aluDataB)), 
+            cALUWidth));
+        when cALUOpSUB =>
+            NxR.aluRes <= std_ulogic_vector(to_unsigned(
+                to_integer(unsigned(R.regReadData1)) -
+                to_integer(unsigned(R.aluDataB)), 
+            cALUWidth));
+        when others =>
+            NxR.aluRes <= (others => '0');
     end case;
     
         
