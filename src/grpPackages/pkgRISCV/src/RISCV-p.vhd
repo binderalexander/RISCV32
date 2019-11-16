@@ -56,13 +56,14 @@ subtype aImm			is std_ulogic_vector(cImmLen-1 downto 0);
 -- ALU
 -------------------------------------------------------------------------------
 constant cALUWidth		: natural := cBitWidth;
-constant cALUOpLength	: natural := 4;
-constant cALUOpAND		: std_ulogic_vector(cALUOpLength-1 downto 0) := "0000";
-constant cALUOpOR		: std_ulogic_vector(cALUOpLength-1 downto 0) := "0001";
-constant cALUOpADD		: std_ulogic_vector(cALUOpLength-1 downto 0) := "0010";
-constant cALUOpSUB		: std_ulogic_vector(cALUOpLength-1 downto 0) := "0110";
 
-subtype aALUOp			is std_ulogic_vector(cALUOpLength-1 downto 0);
+type aALUOp is (
+	ALUOpAdd, ALUOpSub,
+	ALUOpSLT, ALUOpSLTU,			-- less than (unsigned)
+	ALUOpAnd, ALUOpOr, ALUOpXor,
+	ALUOpSLL, ALUOpSRL, ALUOpSRA,	-- shift left/right logical/arithmetic
+	ALUOpNOP
+);
 subtype aALUValue		is std_ulogic_vector(cALUWidth-1 downto 0);
 
 -------------------------------------------------------------------------------
@@ -105,7 +106,7 @@ subtype aALUValue		is std_ulogic_vector(cALUWidth-1 downto 0);
 
 	  curImm		=> (others => '0'),
 
-	  aluOp			=> (others => '0'),
+	  aluOp			=> ALUOpNOP,
 	  aluDataB		=> (others => '0'),
 	  aluRes		=> (others => '0')
   );

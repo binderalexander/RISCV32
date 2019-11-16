@@ -77,32 +77,59 @@ begin
             NxR.curImm(cImmLen - 1 downto 20) <= (others => R.curInstr(31)); 
             NxR.curImm(19 downto 0) <= R.curInstr(19 downto 12) & R.curInstr(20) & R.curInstr(30 downto 21) & '0';
         when others => 
-            NxR.curImm <= (others => '0'); -- TODO: handle illegal instruction
+            NxR.curImm <= (others => '0');
     end case;
 
     -------------------------------------------------------------------------------
     -- ALU
     -------------------------------------------------------------------------------
     case R.aluOp is
-        when cALUOpAND =>
-            NxR.aluRes <= R.regReadData1 AND R.aluDataB;
-        when cALUOpOR =>
-            NxR.aluRes <= R.regReadData1 OR R.aluDataB;
-        when cALUOpADD =>
+        when ALUOpAdd =>
             NxR.aluRes <= std_ulogic_vector(to_unsigned(
                 to_integer(unsigned(R.regReadData1)) +
                 to_integer(unsigned(R.aluDataB)), 
-            cALUWidth));
-        when cALUOpSUB =>
+                cALUWidth));
+        when ALUOpSub =>
             NxR.aluRes <= std_ulogic_vector(to_unsigned(
                 to_integer(unsigned(R.regReadData1)) -
                 to_integer(unsigned(R.aluDataB)), 
-            cALUWidth));
+                cALUWidth));
+        when ALUOpSLT =>
+            if signed(R.regReadData1) < signed(R.aluDataB) then
+                NxR.aluRes <= (0 => '1', others => '0');
+            else
+                NxR.aluRes <= (others => '0');
+            end if;
+        when ALUOpSLTU =>
+            if unsigned(R.regReadData1) < unsigned(R.aluDataB) then
+                NxR.aluRes <= (0 => '1', others => '0');
+            else
+                NxR.aluRes <= (others => '0');
+            end if;
+        when ALUOpAnd =>
+            NxR.aluRes <= R.regReadData1 AND R.aluDataB;
+        when ALUOpOr =>
+            NxR.aluRes <= R.regReadData1 OR R.aluDataB;
+        when ALUOpXor =>
+            NxR.aluRes <= R.regReadData1 XOR R.aluDataB;
+        when ALUOpSLL =>
+            NxR.aluRes <= std_ulogic_vector(
+                shift_left(unsigned(R.regReadData1), 
+                to_integer(unsigned(R.aluDataB(4 downto 0)))));
+        when ALUOpSRL =>
+            NxR.aluRes <= std_ulogic_vector(
+                shift_right(unsigned(R.regReadData1),
+                to_integer(unsigned(R.aluDataB(4 downto 0)))));
+        when ALUOpSRA =>
+            NxR.aluRes <= std_ulogic_vector(
+                shift_right(signed(R.regReadData1),
+                to_integer(unsigned(R.aluDataB(4 downto 0)))));
+        when ALUOpNOP =>
+            NxR.aluRes <= (others => '0');
         when others =>
             NxR.aluRes <= (others => '0');
     end case;
     
-        
 end process;
 
 -- asynchronous register read
