@@ -19,16 +19,22 @@ use work.RISCV.all;
 
 entity Core is
     port (
-        iClk                : in  std_ulogic;
-        inRstAsync          : in  std_ulogic;
+        csi_clk             : in  std_logic;
+        rsi_reset_n         : in  std_logic;
+        
+        -- Instruction Memory Avalon Master Interface
+        avm_i_address      : out std_logic_vector(cBitWidth-1 downto 0);
+        avm_i_write        : out std_logic;
+        avm_i_writedata    : out std_logic_vector(cBitWidth-1 downto 0);
+        avm_i_read         : out std_logic;
+        avm_i_readdata     : in  std_logic_vector(cBitWidth-1 downto 0) := (others => '0');
 
-        -- register addresses
-        iRs1, iRs2, iRd     : in  aRegAdr;
-        -- write enable
-        iWe                 : in  std_ulogic;
-        -- write data
-        iWd                 : in  aRegValue;
-        -- read data
-        oRd1, oRd2          : out aRegValue
+        -- Data Memory Avalon Master Interface
+        avm_d_address      : out std_logic_vector(cBitWidth-1 downto 0);
+        avm_d_write        : out std_logic;
+        avm_d_writedata    : out std_logic_vector(cBitWidth-1 downto 0);
+        avm_d_read         : out std_logic;
+        avm_d_readdata     : in  std_logic_vector(cBitWidth-1 downto 0) := (others => '0');
+
     );
 end entity Core;

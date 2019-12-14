@@ -1,11 +1,11 @@
 -------------------------------------------------------------------------------
--- Title      : RISC-V 32-Bit Immediate Extender
+-- Title      : Testbench for RISC-V 32-Bit FSMD Core Testbed
 -- Project    : RISC-V 32-Bit Core
 -------------------------------------------------------------------------------
--- File       : ImmGen-e.vhd
+-- File       : tbTbdCore-ea.vhd
 -- Author	  : Binder Alexander
--- Date		  : 01.10.2019
--- Revisions  : V1, 01.10.2019 -ba
+-- Date		  : 16.11.2019
+-- Revisions  : V1, 16.11.2019 -ba
 -------------------------------------------------------------------------------
 -- Description:
 -------------------------------------------------------------------------------
@@ -17,14 +17,13 @@ use ieee.numeric_std.all;
 library work;
 use work.RISCV.all;
 
-entity ImmGen is
-    port (
-        iClk            : in  std_ulogic;
-        inRstAsync      : in  std_ulogic;
+entity tbTbdCore is
+end entity tbTbdCore;
 
-        -- instruction from instruction memory
-        iInst           : in  aInstr;
-        -- extendend immediate
-        oImm            : out aImm
-    );
-end entity ImmGen;
+architecture bhv of tbCore is
+begin
+
+-- Clock Gen
+clk <= not(clk) after 10 ns;
+
+end architecture bhv;

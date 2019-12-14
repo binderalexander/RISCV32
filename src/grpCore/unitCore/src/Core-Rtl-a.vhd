@@ -21,12 +21,12 @@ architecture rtl of Core is
 
 begin
     
-Registers: process (iClk, inRstAsync)
+Registers: process (csi_clk, rsi_reset_n)
 begin
-    if (inRstAsync = not('1')) then
+    if (rsi_reset_n = not('1')) then
         R <= cInitValRegSet;
         RegFile <= cInitValRegFile;
-    elsif ( (iClk'event) and (iClk = '1') ) then
+    elsif ( (csi_clk'event) and (csi_clk = '1') ) then
         R <= NxR;
         RegFile <= NxRegFile;
     end if;
