@@ -29,7 +29,7 @@ echo.
 echo.
 
 set CURR_ROOT_DIRECTORY=%~dp0
-set NEW_ROOT_DRIVE=Y:
+set NEW_ROOT_DRIVE=X:
 
 echo Source directory: %CURR_ROOT_DIRECTORY%
 echo Destination drive: %NEW_ROOT_DRIVE%
