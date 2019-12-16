@@ -26,6 +26,8 @@ architecture bhv of tbCore is
     type aInstMem is array (0 to InstMemSize-1) of std_logic_vector(cBitWidth-1 downto 0);
     signal InstMem : aInstMem := (
         0       => "00000000001000001000000110110011", -- add r3 = r1 + r2
+        1       => "00000000111100011000000110010011", -- addi r3 = r3 + 15
+
         others  => (others=>'0')
     );
 

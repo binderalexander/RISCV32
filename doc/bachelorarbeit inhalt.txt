@@ -14,3 +14,9 @@ Testen des Designs - Methodik, Automatisierte Simulation (HEX Files einlesen und
 
 Design Verbessern durch Functions und Procedures für mehrfach vorhandene Elemente (Documentatation von Unterschieden in Codelänge, Syntheseergebnis, Geschwindigkeit des Designs) 
 Evtl. Erweiterung zu Pipelining möglich? FSMD design dafür geeignet?
+
+
+
+Offene Fragen:
+-> Umgang asynchronen Vorgängen und Multiplexern im bezug auf FSMD (Variablen?!?!)
+-> Umgang mit Integerdatentyp in VHDL +-2^31 benschränkt

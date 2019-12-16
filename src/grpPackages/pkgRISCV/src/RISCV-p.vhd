@@ -22,15 +22,21 @@ package RISCV is
 -- Common
 -------------------------------------------------------------------------------
 constant cBitWidth		: natural := 32;
-constant cInstrWidth	: natural := 32;
+constant cInstWidth		: natural := 32;
 
-subtype aInstr      	is std_ulogic_vector(cInstrWidth-1 downto 0);
+subtype aInst	      	is std_ulogic_vector(cInstWidth-1 downto 0);
+subtype aCtrlSignal		is std_ulogic;
+
+-------------------------------------------------------------------------------
+-- Control Unit
+-------------------------------------------------------------------------------
+type aControlUnitState is (Fetch, ReadReg, Calc, DataAccess, WriteReg);
 
 -------------------------------------------------------------------------------
 -- Program Counter
 -------------------------------------------------------------------------------
 constant cPCWidth		: natural := cBitWidth;
-constant cPCIncrement	: natural := 4; -- Default Instruction Length is 4 Byte
+constant cPCIncrement	: natural := 1; -- Default Instruction Length is 4 Byte
 
 subtype aPCValue		is std_ulogic_vector(cBitWidth-1 downto 0);
 
@@ -72,43 +78,42 @@ subtype aALUValue		is std_ulogic_vector(cALUWidth-1 downto 0);
 
   type aRegSet is record
 	-- common signals
-	curInstr					: aInstr;
+	curInst						: aInst;
+	-- control signals
+	ctrlState					: aControlUnitState;
+	aluSrc						: aCtrlSignal;
+
 	-- signals for program counter
 	curPC						: aPCValue;
+	incPC						: aCtrlSignal;
+
 	-- signals for reading register file
-	regReadAdr1, regReadAdr2 	: aRegAdr;
-	regReadData1, regReadData2	: aRegValue;
+	regReadData1				: aRegValue;
 	-- signals for writing register file
-	regWriteAdr					: aRegAdr;
-	regWriteEn					: std_ulogic;
+	regWriteEn					: aCtrlSignal;
 	regWriteData				: aRegValue;
-	-- signals for immediate extension
-	curImm						: aImm;
+
 	-- signals for ALU
 	aluOp						: aALUOp;
-	aluDataB					: aALUValue;
-	aluRes						: aALUValue;
+	aluData2					: aALUValue;
   end record aRegSet;
 
   constant cInitValRegSet : aRegSet := (
-	  curInstr 		=> (others => '0'),
+	  curInst 		=> (others => '0'),
+
+	  ctrlState		=> Fetch,
+  	  aluSrc		=> '0',
 
 	  curPC			=> (others => '0'),
+	  incPC			=> '0',
 
-	  regReadAdr1 	=> (others => '0'),
-	  regReadAdr2	=> (others => '0'),
 	  regReadData1	=> (others => '0'),
-	  regReadData2	=> (others => '0'),
 
-	  regWriteAdr	=> (others => '0'),
 	  regWriteEn	=> '0',
 	  regWriteData	=> (others => '0'),
 
-	  curImm		=> (others => '0'),
-
 	  aluOp			=> ALUOpNOP,
-	  aluDataB		=> (others => '0'),
-	  aluRes		=> (others => '0')
+	  aluData2		=> (others => '0')
   );
 
 

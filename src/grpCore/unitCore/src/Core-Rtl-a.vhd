@@ -17,7 +17,10 @@ architecture rtl of Core is
 
     -- Register File
     signal RegFile, NxRegFile : aRegFile;
-    constant cInitValRegFile : aRegFile := (others => (others => '0'));
+    constant cInitValRegFile : aRegFile := (    1 => x"00000064",
+												2 => x"00000010",
+                                                3 => x"CAFEBABE",
+                                                others => (others => '0'));
 
 begin
     
@@ -33,107 +36,208 @@ begin
 end process;
 
 Comb: process (R, RegFile)
+    variable vRegReadData2  : aRegValue := (others=>'0');
+	variable vAluRes        : aALUValue := (others=>'0');
+	variable vImm			: aImm		:= (others=>'0');
+
 begin
     NxR <= R;
     NxRegFile <= RegFile;
 
     -------------------------------------------------------------------------------
+    -- Control Unit
+    -------------------------------------------------------------------------------
+    NxR.incPC <= '0';
+
+    if R.ctrlState = Fetch then
+        NxR.ctrlState <= ReadReg;
+
+    elsif R.ctrlState = ReadReg then
+        case R.curInst(6 downto 0) is   -- check opcode
+            -- R-Type or I-Type Register Instructions 
+            when "0110011" | "0010011" =>
+                case R.curInst(14 downto 12) is
+                    when "000" =>   						-- add/sub
+                        case R.curInst(30) is
+                            when '0' => NxR.aluOp <= ALUOpAdd;
+                            when '1' => NxR.aluOp <= ALUOpSub;
+                            when others => null; 
+                        end case;
+                    when "001" => NxR.aluOp <= ALUOpSLL; 	-- shift left logical
+					when "010" => NxR.aluOp <= ALUOpSLT;	-- signed less than
+					when "011" => NxR.aluOp <= ALUOpSLTU;	-- unsigned less than
+					when "100" => NxR.aluOp <= ALUOpXor; 	-- xor
+					when "101" => 							-- shift rigth logical/arithmetical
+						case R.curInst(30) is
+							when '0' => NxR.aluOp <= ALUOpSRL;
+							when '1' => NxR.aluOp <= ALUOpSRA;
+							when others => null;
+						end case;
+					when "110" => NxR.aluOp <= ALUOpOr; 	-- or
+					when "111" => NxR.aluOp <= ALUOpAnd;	-- and
+					when others => null;
+				end case;
+				
+				if R.curInst(5) = '1' then
+					NxR.aluSrc <= '1';
+				elsif R.curInst(5) = '0' then
+					NxR.aluSrc <= '0';
+				else
+					null;
+				end if;
+
+                NxR.incPC       <= '1';
+                NxR.ctrlState <= Calc;
+            when others =>
+                null; -- not implemented yet
+
+        end case;
+
+    elsif R.ctrlState = Calc then
+        case R.curInst(6 downto 0) is   -- check opcode
+            -- R-Type or I-Type Register Instructions
+            when "0110011" | "0010011" =>
+                --TODO: Mux MEMTOREG Setzen
+                NxR.ctrlState <= WriteReg;
+				NxR.regWriteEn <= '1';
+
+            when others =>
+                null; -- not implemented yet
+
+        end case;
+
+    elsif R.ctrlState = DataAccess then
+
+    elsif R.ctrlState = WriteReg then
+        NxR.regWriteEn  <= '0';
+
+        NxR.ctrlState <= Fetch;
+
+    else 
+        null;
+    end if;
+
+    -------------------------------------------------------------------------------
     -- Program Counter
     -------------------------------------------------------------------------------
-    NxR.curPC <= std_ulogic_vector(to_unsigned(
-                        to_integer(unsigned(R.curPC)) + cPCIncrement, cPCWidth));
+    if R.incPC = '1' then
+        NxR.curPC <= std_ulogic_vector(to_unsigned(
+                        to_integer(unsigned(R.curPC))+ cPCIncrement, cPCWidth));
+    else
+        NxR.curPC <= R.curPC;
+    end if;
+
+
+    -------------------------------------------------------------------------------
+    -- Instruction Memory
+    -------------------------------------------------------------------------------
+    avm_i_read      <= '1';
+    avm_i_address   <= std_logic_vector(R.curPC);
+    NxR.curInst     <= std_ulogic_vector(avm_i_readdata);
 
     -------------------------------------------------------------------------------
     -- Register File
     -------------------------------------------------------------------------------
-    --if (iWe = '1' and iRd /= "00000") then
-    --    NxRegFile(to_integer(unsigned(iRd))) <= iWd;
-    --end if;
+    -- read registers
+    NxR.regReadData1    <= RegFile(to_integer(unsigned(R.curInst(19 downto 15))));
+    vRegReadData2       := RegFile(to_integer(unsigned(R.curInst(24 downto 20))));
+
+    -- write register
+    if R.regWriteEn = '1' and R.curInst(11 downto 7) /= "00000" then
+        NxRegFile(to_integer(unsigned(R.curInst(11 downto 7)))) <= R.regWriteData;
+    end if;
 
     -------------------------------------------------------------------------------
     -- Immediate Extension
     -------------------------------------------------------------------------------
-    case R.curInstr(6 downto 0) is
+    case R.curInst(6 downto 0) is
         -- R-Type
         when "0110011" =>
-            NxR.curImm <= (others => '0');
+            vImm := (others => '0');
         -- I-Type
         when  "1100111" | "0000011" | "0010011" =>
-            NxR.curImm(10 downto 0) <= R.curInstr(30 downto 20);
-            NxR.curImm(cImmLen - 1 downto 11) <= (others => R.curInstr(31));
+			vImm(10 downto 0) := R.curInst(30 downto 20);
+            vImm(cImmLen - 1 downto 11) := (others => R.curInst(31));
         -- S-Type
         when "0100011" =>
-            NxR.curImm(10 downto 0) <= R.curInstr(30 downto 25) & R.curInstr(4 downto 0);
-            NxR.curImm(cImmLen - 1 downto 11) <= (others => R.curInstr(31));
+            vImm(10 downto 0) := R.curInst(30 downto 25) & R.curInst(4 downto 0);
+            vImm(cImmLen - 1 downto 11) := (others => R.curInst(31));
         -- B-Type
         when "1100011" =>
-            NxR.curImm(cImmLen - 1 downto 12) <= (others => R.curInstr(31));
-            NxR.curImm(11 downto 0) <= R.curInstr(7) & R.curInstr(30 downto 25) & R.curInstr(11 downto 8) & '0';
+            vImm(cImmLen - 1 downto 12) := (others => R.curInst(31));
+            vImm(11 downto 0) := R.curInst(7) & R.curInst(30 downto 25) & R.curInst(11 downto 8) & '0';
         -- U-Type
         when "0110111" | "0010111" =>
-            NxR.curImm <= R.curInstr(31 downto 12) & "000000000000";
+            vImm := R.curInst(31 downto 12) & "000000000000";
         -- J-Type
         when "1101111" =>
-            NxR.curImm(cImmLen - 1 downto 20) <= (others => R.curInstr(31)); 
-            NxR.curImm(19 downto 0) <= R.curInstr(19 downto 12) & R.curInstr(20) & R.curInstr(30 downto 21) & '0';
+            vImm(cImmLen - 1 downto 20) := (others => R.curInst(31)); 
+            vImm(19 downto 0) := R.curInst(19 downto 12) & R.curInst(20) & R.curInst(30 downto 21) & '0';
         when others => 
-            NxR.curImm <= (others => '0');
+            vImm := (others => '0');
     end case;
 
     -------------------------------------------------------------------------------
     -- ALU
     -------------------------------------------------------------------------------
     case R.aluOp is
-        when ALUOpAdd =>
-            NxR.aluRes <= std_ulogic_vector(to_unsigned(
+        when ALUOpAdd => -- TODO HANDLE INTEGER OVERFLOW at 2^31
+            vAluRes := std_ulogic_vector(to_unsigned(
                 to_integer(unsigned(R.regReadData1)) +
-                to_integer(unsigned(R.aluDataB)), 
+                to_integer(unsigned(R.aluData2)), 
                 cALUWidth));
         when ALUOpSub =>
-            NxR.aluRes <= std_ulogic_vector(to_unsigned(
+            vAluRes := std_ulogic_vector(to_unsigned(
                 to_integer(unsigned(R.regReadData1)) -
-                to_integer(unsigned(R.aluDataB)), 
+                to_integer(unsigned(R.aluData2)), 
                 cALUWidth));
         when ALUOpSLT =>
-            if signed(R.regReadData1) < signed(R.aluDataB) then
-                NxR.aluRes <= (0 => '1', others => '0');
+            if signed(R.regReadData1) < signed(R.aluData2) then
+                vAluRes := (0 => '1', others => '0');
             else
-                NxR.aluRes <= (others => '0');
+                vAluRes := (others => '0');
             end if;
         when ALUOpSLTU =>
-            if unsigned(R.regReadData1) < unsigned(R.aluDataB) then
-                NxR.aluRes <= (0 => '1', others => '0');
+            if unsigned(R.regReadData1) < unsigned(R.aluData2) then
+                vAluRes := (0 => '1', others => '0');
             else
-                NxR.aluRes <= (others => '0');
+                vAluRes := (others => '0');
             end if;
         when ALUOpAnd =>
-            NxR.aluRes <= R.regReadData1 AND R.aluDataB;
+            vAluRes := R.regReadData1 AND R.aluData2;
         when ALUOpOr =>
-            NxR.aluRes <= R.regReadData1 OR R.aluDataB;
+            vAluRes := R.regReadData1 OR R.aluData2;
         when ALUOpXor =>
-            NxR.aluRes <= R.regReadData1 XOR R.aluDataB;
+            vAluRes := R.regReadData1 XOR R.aluData2;
         when ALUOpSLL =>
-            NxR.aluRes <= std_ulogic_vector(
+            vAluRes := std_ulogic_vector(
                 shift_left(unsigned(R.regReadData1), 
-                to_integer(unsigned(R.aluDataB(4 downto 0)))));
+                to_integer(unsigned(R.aluData2(4 downto 0)))));
         when ALUOpSRL =>
-            NxR.aluRes <= std_ulogic_vector(
+            vAluRes := std_ulogic_vector(
                 shift_right(unsigned(R.regReadData1),
-                to_integer(unsigned(R.aluDataB(4 downto 0)))));
+                to_integer(unsigned(R.aluData2(4 downto 0)))));
         when ALUOpSRA =>
-            NxR.aluRes <= std_ulogic_vector(
+            vAluRes := std_ulogic_vector(
                 shift_right(signed(R.regReadData1),
-                to_integer(unsigned(R.aluDataB(4 downto 0)))));
+                to_integer(unsigned(R.aluData2(4 downto 0)))));
         when ALUOpNOP =>
-            NxR.aluRes <= (others => '0');
+            vAluRes := (others => '0');
         when others =>
-            NxR.aluRes <= (others => '0');
+            vAluRes := (others => '0');
     end case;
+
+    -------------------------------------------------------------------------------
+    -- Multiplexer
+	-------------------------------------------------------------------------------
+	if R.aluSrc = '0' then
+		NxR.aluData2 <= vRegReadData2;
+	else
+		NxR.aluData2 <= vImm;
+	end if;
+	
+    NxR.regWriteData    <= vAluRes;
     
 end process;
-
--- asynchronous register read
---oRd1 <= RegFile(to_integer(unsigned(iRs1)));
---oRd2 <= RegFile(to_integer(unsigned(iRs2)));
 
 end architecture rtl;
