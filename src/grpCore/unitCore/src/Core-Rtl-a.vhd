@@ -32,7 +32,7 @@ begin
     end if;
 end process;
 
-Comb: process (R, RegFile, iWe, iWd, iRd)
+Comb: process (R, RegFile)
 begin
     NxR <= R;
     NxRegFile <= RegFile;
@@ -46,9 +46,9 @@ begin
     -------------------------------------------------------------------------------
     -- Register File
     -------------------------------------------------------------------------------
-    if (iWe = '1' and iRd /= "00000") then
-        NxRegFile(to_integer(unsigned(iRd))) <= iWd;
-    end if;
+    --if (iWe = '1' and iRd /= "00000") then
+    --    NxRegFile(to_integer(unsigned(iRd))) <= iWd;
+    --end if;
 
     -------------------------------------------------------------------------------
     -- Immediate Extension
@@ -133,7 +133,7 @@ begin
 end process;
 
 -- asynchronous register read
-oRd1 <= RegFile(to_integer(unsigned(iRs1)));
-oRd2 <= RegFile(to_integer(unsigned(iRs2)));
+--oRd1 <= RegFile(to_integer(unsigned(iRs1)));
+--oRd2 <= RegFile(to_integer(unsigned(iRs2)));
 
 end architecture rtl;

@@ -32,15 +32,15 @@ rem ****************************************************************************
 
 rem *******************************************************************************
 rem * Questasim
-set MY_QUESTASIM_PATH=C:\intelFPGA_lite\18.1\modelsim_ase
-set MY_QUESTASIM_EXECUTABLE_MAIN=C:\intelFPGA_lite\18.1\modelsim_ase\win32aloem
+set MY_QUESTASIM_PATH=C:\intelFPGA\18.1\modelsim_ase
+set MY_QUESTASIM_EXECUTABLE_MAIN=C:\intelFPGA\18.1\modelsim_ase\win32aloem
 set MY_QUESTASIM_EXECUTABLE_VSIM=
 rem *******************************************************************************
 
 rem *******************************************************************************
 rem * Quartus
-set MY_QUARTUS_PATH=C:\intelFPGA_lite\18.1\quartus
-set MY_QUARTUS_EXECUTABLE_MAIN=C:\intelFPGA_lite\18.1\quartus\bin64
+set MY_QUARTUS_PATH=C:\intelFPGA\18.1\quartus
+set MY_QUARTUS_EXECUTABLE_MAIN=C:\intelFPGA\18.1\quartus\bin64
 set MY_QUARTUS_EXECUTABLE_SHELL=
 rem *******************************************************************************
 

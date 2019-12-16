@@ -21,12 +21,27 @@ entity tbCore is
 end entity tbCore;
 
 architecture bhv of tbCore is
+
+    constant InstMemSize : natural := 8;
+    type aInstMem is array (0 to InstMemSize-1) of std_logic_vector(cBitWidth-1 downto 0);
+    signal InstMem : aInstMem := (
+        0       => "00000000001000001000000110110011", -- add r3 = r1 + r2
+        others  => (others=>'0')
+    );
+
     signal clk              : std_ulogic := '0';
     signal reset            : std_ulogic := '0';
-    signal rs1, rs2, rd     : aRegAdr := (others => '0');
-    signal we               : std_ulogic := '0';
-    signal wd               : aRegValue := (others => '0');
-    signal rd1, rd2         : aRegValue := (others => '0');
+
+    signal instAddress      : std_logic_vector(cBitWidth-1 downto 0);
+    signal instRead         : std_logic;
+    signal instReadData     : std_logic_vector(cBitWidth-1 downto 0);
+
+    signal dataAddress      : std_logic_vector(cBitWidth-1 downto 0);
+    signal dataWrite        : std_logic;
+    signal dataWriteData    : std_logic_vector(cBitWidth-1 downto 0);
+    signal dataRead         : std_logic;
+    signal dataReadData     : std_logic_vector(cBitWidth-1 downto 0);
+
 begin
 
 -- Clock Gen
@@ -34,38 +49,44 @@ clk <= not(clk) after 10 ns;
 
 UUT: entity work.Core(rtl)
     port map(
-        iClk        => clk,
-        inRstAsync  => reset,
-        iRs1        => rs1,
-        iRs2        => rs2,
-        iRd         => rd,
-        iWe         => we,
-        iWd         => wd,
-        oRd1        => rd1,
-        oRd2        => rd2
+        csi_clk             => clk,
+        rsi_reset_n         => reset,
+
+        avm_i_address       => instAddress,
+        avm_i_read          => instRead,
+        avm_i_readdata      => instReadData,
+
+        avm_d_address       => dataAddress,
+        avm_d_write         => dataWrite,
+        avm_d_writedata     => dataWriteData,
+        avm_d_read          => dataRead,
+        avm_d_readdata      => dataReadData
     );
     
 Stimuli: process is
 begin
     reset <= '1' after 100 ns;
-
-    wd <= std_ulogic_vector(to_unsigned(16#1234FEDC#, aRegValue'length));
-    we <=   '1' after 20 ns,
-            '0' after 60 ns,
-            '1' after 200 ns;
-
-    rs1 <=  "01011" after 400 ns,
-            "00000" after 2000 ns;
-    rs2 <=  "00100" after 400 ns,
-            "00000" after 2000 ns;
-
-    for i in 0 to 31 loop
-        rd <= transport std_ulogic_vector(to_unsigned(i, aRegAdr'length)) after ((10 + i) * (30 ns));
-    end loop;
     
     wait;    
 
 end process Stimuli;
+
+InstructionMem: process(clk, reset) is
+
+begin
+
+    if reset = not('1') then
+        instReadData <= (others => '0');
+
+    elsif rising_edge(clk) then
+
+        if (instRead = '1') and (to_integer(unsigned(instAddress)) < InstMemSize) then
+            instReadData <= InstMem(to_integer(unsigned(instAddress)));
+        end if;
+
+    end if;
+
+end process InstructionMem;
 
 
 end architecture bhv;
