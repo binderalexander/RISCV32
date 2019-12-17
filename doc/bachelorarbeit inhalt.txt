@@ -20,3 +20,5 @@ Evtl. Erweiterung zu Pipelining möglich? FSMD design dafür geeignet?
 Offene Fragen:
 -> Umgang asynchronen Vorgängen und Multiplexern im bezug auf FSMD (Variablen?!?!)
 -> Umgang mit Integerdatentyp in VHDL +-2^31 benschränkt
+-> Laden von binärfiles - Aufbau??? - Endianess
+-> 12 Bit immediates laut compiler nur 11 bit erlaubt?
