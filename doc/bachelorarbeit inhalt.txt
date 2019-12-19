@@ -6,19 +6,15 @@ Ansatz (FSMD?), Implementierung als ein riesigen Comb Process, Ein großes recor
 -> Auf lesbarkeit achten
 -> ROM Speicher als M10k Block? RegFile M10k oder MLAB? vgl. Geschindigkeit Größe
 -> Avalon Bus, IP Core
--> Nur Grundinstruktionset implementieren 
+-> Nur Grundinstruktionset implementieren
 
 Vergleich von Größe und Geschwindigkeit mit bereits bestehenden Designs
 
 Testen des Designs - Methodik, Automatisierte Simulation (HEX Files einlesen und einladen(anscheinden mit tcl möglich od. hardcoded in design oder mittels generic der ROM Inhalt speichern) und Instruktionen verifizieren) - Waveforms sollten nicht mehr betrachtet werden müssen, QSys RAM Baustein extern anhängen - Hex Files einladen und prüfen
 
-Design Verbessern durch Functions und Procedures für mehrfach vorhandene Elemente (Documentatation von Unterschieden in Codelänge, Syntheseergebnis, Geschwindigkeit des Designs) 
+Design Verbessern durch Functions und Procedures für mehrfach vorhandene Elemente (Documentatation von Unterschieden in Codelänge, Syntheseergebnis, Geschwindigkeit des Designs)
 Evtl. Erweiterung zu Pipelining möglich? FSMD design dafür geeignet?
 
 
 
-Offene Fragen:
--> Umgang asynchronen Vorgängen und Multiplexern im bezug auf FSMD (Variablen?!?!)
--> Umgang mit Integerdatentyp in VHDL +-2^31 benschränkt
--> Laden von binärfiles - Aufbau??? - Endianess
--> 12 Bit immediates laut compiler nur 11 bit erlaubt?
+-> Synthese Testen ob Comb keine Register erzeugt - Records auf ports nach aussen hängen

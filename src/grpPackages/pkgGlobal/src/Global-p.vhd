@@ -28,6 +28,8 @@ package Global is
   constant cDetectFallingEdge : natural := 1;
   constant cDetectAnyEdge     : natural := 2;
 
+  constant cByte : natural := 8;
+
   -----------------------------------------------------------------------------
   -- Project specific definitions that will typically exist for every project.
   -----------------------------------------------------------------------------
