@@ -1,0 +1,263 @@
+# do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:13:04 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 24 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 22:14:39 on Jan 13,2020, Elapsed time: 0:01:35
+# Errors: 0, Warnings: 3
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:14:39 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 36 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 22:16:35 on Jan 13,2020, Elapsed time: 0:01:56
+# Errors: 0, Warnings: 3
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:16:35 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 36 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 22:21:16 on Jan 13,2020, Elapsed time: 0:04:41
+# Errors: 0, Warnings: 3
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:21:16 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 36 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 22:22:15 on Jan 13,2020, Elapsed time: 0:00:59
+# Errors: 0, Warnings: 3
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:22:15 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 36 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 22:23:31 on Jan 13,2020, Elapsed time: 0:01:16
+# Errors: 0, Warnings: 3
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:23:31 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 36 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/flw/simQuestasim/wave.do
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/flw/simQuestasim/wave.do
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 22:24:01 on Jan 13,2020, Elapsed time: 0:00:30
+# Errors: 0, Warnings: 3
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:24:01 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 36 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# ** Error: /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd(97): near "|": syntax error
+# ** Error: /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd(101): near "when": (vcom-1576) expecting END.
+# ** Error: /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd(109): near "elsif": (vcom-1576) expecting END.
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# ** Error: /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd(180): Target type ieee.std_logic_1164.STD_LOGIC_VECTOR in variable assignment is different from expression type std.STANDARD.NATURAL.
+# ** Error: /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd(184): Target type ieee.std_logic_1164.STD_LOGIC_VECTOR in variable assignment is different from expression type work.RISCV.aFunct3.
+# ** Error: /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd(188): Target type ieee.std_logic_1164.STD_LOGIC_VECTOR in variable assignment is different from expression type work.RISCV.aFunct3.
+# ** Warning: /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd(184): (vcom-1272) Length of expected is 4; length of actual is 3.
+# ** Warning: /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd(188): (vcom-1272) Length of expected is 4; length of actual is 3.
+# ** Error: /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd(304): VHDL Compiler exiting
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 22:45:05 on Jan 13,2020, Elapsed time: 0:21:04
+# Errors: 7, Warnings: 5
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:45:05 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+run
+add wave -position 1  sim:/tbcore/DataMem
+restart
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 22:52:30 on Jan 13,2020, Elapsed time: 0:07:25
+# Errors: 0, Warnings: 6
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:52:30 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+add wave -position 1  sim:/tbcore/DataMem
+restart
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+add wave -position 28  sim:/tbcore/dataByteEnable
+restart
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 22:55:45 on Jan 13,2020, Elapsed time: 0:03:15
+# Errors: 0, Warnings: 9
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:55:45 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+add wave -position 1  sim:/tbcore/DataMem
+add wave -position 8  sim:/tbcore/dataByteEnable
+restart
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 22:58:52 on Jan 13,2020, Elapsed time: 0:03:07
+# Errors: 0, Warnings: 6
+# vsim -quiet -novopt work.tbCore 
+# Start time: 22:58:52 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+add wave -position 1  sim:/tbcore/DataMem
+add wave -position 8  sim:/tbcore/dataByteEnable
+restart
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# End time: 23:00:37 on Jan 13,2020, Elapsed time: 0:01:45
+# Errors: 0, Warnings: 6
+# vsim -quiet -novopt work.tbCore 
+# Start time: 23:00:37 on Jan 13,2020
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+add wave -position 1  sim:/tbcore/DataMem
+restart
+add wave -position 7  sim:/tbcore/dataByteEnable
+run
+# ** Warning: (vsim-3116) Problem reading symbols from linux-gate.so.1 : can not open ELF file.
+# ** Note: 52 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# End time: 23:02:34 on Jan 13,2020, Elapsed time: 0:01:57
+# Errors: 0, Warnings: 6

@@ -29,15 +29,22 @@ architecture bhv of tbCore is
         others  => (others=>'0')
     );
 
-    constant DataMemSize : natural := 32;
+    constant DataMemSize : natural := 16;
     type aDataMem is array (0 to DataMemSize-1) of std_logic_vector(cByte-1 downto 0);
-    signal DataMem: aDataMem := (others=>(others=>'0'));
+    signal DataMem: aDataMem := (
+        0 => x"81",
+        1 => x"02",
+        2 => x"03",
+        3 => x"04",
+        4 => x"FF",
+        5 => x"FE",
+        others=>(others=>'0')
+    );
 
     signal clk              : std_ulogic := '0';
     signal reset            : std_ulogic := '0';
 
     signal instAddress      : std_logic_vector(cBitWidth-1 downto 0);
-    signal instByteEnable   : std_logic_vector(cBitWidth/cByte-1 downto 0);
     signal instRead         : std_logic;
     signal instReadData     : std_logic_vector(cBitWidth-1 downto 0) := (others => '0');
 
@@ -45,7 +52,7 @@ architecture bhv of tbCore is
     signal dataByteEnable   : std_logic_vector(cBitWidth/cByte-1 downto 0);
     signal dataWrite        : std_logic;
     signal dataWriteData    : std_logic_vector(cBitWidth-1 downto 0);
-    signal dataRead         : std_logic;
+    signal dataRead         : std_logic := '1';
     signal dataReadData     : std_logic_vector(cBitWidth-1 downto 0) := (others => '0');
 
 begin
@@ -59,7 +66,6 @@ UUT: entity work.Core(rtl)
         rsi_reset_n         => reset,
 
         avm_i_address       => instAddress,
-        --avm_i_byteenable    => instByteEnable,
         avm_i_read          => instRead,
         avm_i_readdata      => instReadData,
 
@@ -77,7 +83,7 @@ ReadROM: process is
     variable char_v : character;
     variable i : natural := 0;
 begin
-    file_open(char_file, "../../../../../test/checkR.bin");
+    file_open(char_file, "../../../../../test/checkL.bin");
     while not endfile(char_file) and (i < InstMemSize) loop
         read(char_file, char_v);
         InstMem(i) <= std_logic_vector(to_unsigned(character'pos(char_v), cByte));
@@ -109,14 +115,10 @@ end process InstructionMemory;
 DataMemory: process(clk) is
 begin
 
-    if rising_edge(clk) then
+    if falling_edge(clk) then
         if (dataRead = '1') and (to_integer(unsigned(dataAddress))+cByteWidth-1) < DataMemSize then
             readDataMemory : for i in 0 to cByteWidth-1 loop
-                if dataByteEnable(i) = '1' then
-                    dataReadData(((i+1)*cByte)-1 downto i*cByte) <= DataMem(to_integer(unsigned(dataAddress))+i);
-                else
-                    dataReadData(((i+1)*cByte)-1 downto i*cByte) <= (others=>'0');
-                end if;
+                dataReadData(((i+1)*cByte)-1 downto i*cByte) <= DataMem(to_integer(unsigned(dataAddress))+i);
             end loop;
         end if;
 

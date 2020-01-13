@@ -23,10 +23,10 @@ add wave -noupdate /tbcore/UUT/avm_d_read
 add wave -noupdate /tbcore/UUT/avm_d_readdata
 add wave -noupdate -childformat {{/tbcore/UUT/R.curInst -radix hexadecimal} {/tbcore/UUT/R.curPC -radix hexadecimal} {/tbcore/UUT/R.regReadData1 -radix hexadecimal} {/tbcore/UUT/R.regWriteData -radix hexadecimal} {/tbcore/UUT/R.aluData2 -radix hexadecimal}} -expand -subitemconfig {/tbcore/UUT/R.curInst {-height 16 -radix hexadecimal} /tbcore/UUT/R.curPC {-height 16 -radix hexadecimal} /tbcore/UUT/R.regReadData1 {-height 16 -radix hexadecimal} /tbcore/UUT/R.regWriteData {-height 16 -radix hexadecimal} /tbcore/UUT/R.aluData2 {-height 16 -radix hexadecimal}} /tbcore/UUT/R
 add wave -noupdate /tbcore/UUT/NxR
-add wave -noupdate -childformat {{/tbcore/UUT/RegFile(1) -radix hexadecimal} {/tbcore/UUT/RegFile(2) -radix hexadecimal} {/tbcore/UUT/RegFile(3) -radix hexadecimal}} -expand -subitemconfig {/tbcore/UUT/RegFile(1) {-height 16 -radix hexadecimal} /tbcore/UUT/RegFile(2) {-height 16 -radix hexadecimal} /tbcore/UUT/RegFile(3) {-height 16 -radix hexadecimal}} /tbcore/UUT/RegFile
+add wave -noupdate -childformat {{/tbcore/UUT/RegFile(1) -radix hexadecimal} {/tbcore/UUT/RegFile(2) -radix hexadecimal} {/tbcore/UUT/RegFile(3) -radix hexadecimal} {/tbcore/UUT/RegFile(4) -radix hexadecimal} {/tbcore/UUT/RegFile(5) -radix hexadecimal} {/tbcore/UUT/RegFile(6) -radix hexadecimal}} -expand -subitemconfig {/tbcore/UUT/RegFile(1) {-height 16 -radix hexadecimal} /tbcore/UUT/RegFile(2) {-height 16 -radix hexadecimal} /tbcore/UUT/RegFile(3) {-height 16 -radix hexadecimal} /tbcore/UUT/RegFile(4) {-radix hexadecimal} /tbcore/UUT/RegFile(5) {-radix hexadecimal} /tbcore/UUT/RegFile(6) {-radix hexadecimal}} /tbcore/UUT/RegFile
 add wave -noupdate /tbcore/UUT/NxRegFile
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {10124259 ps} 0}
+WaveRestoreCursors {{Cursor 1} {502456 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 217
 configure wave -valuecolwidth 100
@@ -42,4 +42,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {1149244 ps}
+WaveRestoreZoom {454109 ps} {1028732 ps}

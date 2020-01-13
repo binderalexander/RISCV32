@@ -35,11 +35,12 @@ begin
     end if;
 end process;
 
-Comb: process (R, RegFile)
-    variable vRegReadData2     : aRegValue := (others=>'0');
-	variable vAluRes           : aALUValue := (others=>'0');
-	variable vImm              : aImm	   := (others=>'0');
-    variable vDataMemReadData  : aWord     := (others=>'0');
+Comb: process (R, RegFile, avm_i_readdata, avm_d_readdata)
+    variable vRegReadData2      : aRegValue := (others=>'0');
+	variable vAluRes            : aALUValue := (others=>'0');
+	variable vImm               : aImm	    := (others=>'0');
+    variable vDataMemReadData   : aWord     := (others=>'0');
+    variable vDataMemByteEnable : std_logic_vector(3 downto 0) := (others=>'0');
 
 begin
     NxR <= R;
@@ -48,15 +49,20 @@ begin
     -------------------------------------------------------------------------------
     -- Control Unit
     -------------------------------------------------------------------------------
-    NxR.incPC <= '0';
+    NxR.incPC       <= '0';
+    NxR.memRead     <= '0';
+    NxR.memWrite    <= '0';
+    NxR.memToReg    <= cMemToRegALU;
 
     if R.ctrlState = Fetch then
         NxR.ctrlState <= ReadReg;
 
     elsif R.ctrlState = ReadReg then
-        case R.curInst(6 downto 0) is   -- check opcode
-            -- R-Type or I-Type Register Instructions
-            when "0110011" | "0010011" =>
+
+        case R.curInst(6 downto 0) is
+
+            when cOpRType | cOpIArith =>
+                -- ALU OpCode
                 case R.curInst(14 downto 12) is
                     when "000" =>   						-- add/sub
                         case R.curInst(30) is
@@ -88,20 +94,34 @@ begin
 					null;
 				end if;
 
-                NxR.incPC       <= '1';
-                NxR.ctrlState <= Calc;
+            when cOpILoad | cOpSType =>
+                NxR.aluOp   <= ALUOpAdd;
+                NxR.aluSrc  <= cALUSrcImmGen;
+
             when others =>
                 null; -- not implemented yet
 
         end case;
 
+        NxR.incPC     <= '1';
+        NxR.ctrlState <= Calc;
+
     elsif R.ctrlState = Calc then
         case R.curInst(6 downto 0) is   -- check opcode
-            -- R-Type or I-Type Register Instructions
-            when "0110011" | "0010011" =>
-                --TODO: Mux MEMTOREG Setzen
-                NxR.ctrlState <= WriteReg;
-				NxR.regWriteEn <= '1';
+            -- R-Type or I-Type Register Instruction
+            when cOpRType | cOpIArith =>
+            	NxR.regWriteEn  <= '1';
+                NxR.memToReg    <= cMemToRegALU;
+                NxR.ctrlState   <= WriteReg;
+            -- I-Type Load Instruction
+            when cOpILoad =>
+                NxR.memRead     <= '1';
+                NxR.memToReg    <= cMemToRegMem;
+                NxR.ctrlState   <= DataAccess;
+            -- S-Type Store Instruction
+            when cOpSType =>
+                NxR.memWrite    <= '1';
+                NxR.ctrlState   <= DataAccess;
 
             when others =>
                 null; -- not implemented yet
@@ -109,10 +129,18 @@ begin
         end case;
 
     elsif R.ctrlState = DataAccess then
+        case R.curInst(6 downto 0) is
+            when cOpILoad =>
+                NxR.regWriteEn  <= '1';
+                NxR.ctrlState   <= WriteReg;
+            when cOpSType =>
+                NxR.ctrlState   <= Fetch;
+            when others =>
+                null;
+        end case;
 
     elsif R.ctrlState = WriteReg then
         NxR.regWriteEn  <= '0';
-
         NxR.ctrlState <= Fetch;
 
     else
@@ -141,10 +169,31 @@ begin
     -- Data Memory
     -------------------------------------------------------------------------------
     avm_d_address       <= std_logic_vector(vAluRes);
+    avm_d_byteenable    <= vDataMemByteEnable;
     avm_d_write         <= std_logic(R.memWrite);
     avm_d_writedata     <= std_logic_vector(vRegReadData2);
     avm_d_read          <= std_logic(R.memRead);
-    vDataMemReadData    := std_ulogic_vector(avm_d_readdata);
+
+    case R.curInst(14 downto 12) is
+        when cMemByte               => vDataMemReadData := std_ulogic_vector(resize(signed(
+                                        avm_d_readdata(cByte-1 downto 0)), cBitWidth));
+                                        vDataMemByteEnable := cEnableByte;
+
+        when cMemHalfWord           => vDataMemReadData := std_ulogic_vector(resize(signed(
+                                        avm_d_readdata(2*cByte-1 downto 0)), cBitWidth));
+                                        vDataMemByteEnable := cEnableHalfWord;
+
+        when cMemWord               => vDataMemReadData := std_ulogic_vector(resize(signed(
+                                        avm_d_readdata(4*cByte-1 downto 0)), cBitWidth));
+                                        vDataMemByteEnable := cEnableWord;
+
+        when cMemUnsignedByte       => vDataMemReadData := std_ulogic_vector(resize(unsigned(
+                                        avm_d_readdata(cByte-1 downto 0)), cBitWidth));
+        when cMemUnsignedHalfWord   => vDataMemReadData := std_ulogic_vector(resize(unsigned(
+                                        avm_d_readdata(2*cByte-1 downto 0)), cBitWidth));
+    when others =>
+        null;
+    end case;
 
     -------------------------------------------------------------------------------
     -- Register File
@@ -171,7 +220,7 @@ begin
             vImm(cImmLen - 1 downto 11) := (others => R.curInst(31));
         -- S-Type
         when "0100011" =>
-            vImm(10 downto 0) := R.curInst(30 downto 25) & R.curInst(4 downto 0);
+            vImm(10 downto 0) := R.curInst(30 downto 25) & R.curInst(11 downto 7);
             vImm(cImmLen - 1 downto 11) := (others => R.curInst(31));
         -- B-Type
         when "1100011" =>
@@ -243,7 +292,12 @@ begin
 		NxR.aluData2 <= vImm;
 	end if;
 
-    NxR.regWriteData    <= vAluRes;
+    if R.memToReg = cMemToRegALU then
+        NxR.regWriteData <= vAluRes;
+    else
+        NxR.regWriteData <= vDataMemReadData;
+    end if;
+
 
 end process;
 

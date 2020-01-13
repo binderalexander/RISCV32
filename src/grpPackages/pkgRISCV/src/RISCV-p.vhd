@@ -30,12 +30,36 @@ subtype aWord           is std_ulogic_vector(cBitWidth-1 downto 0);
 subtype aCtrlSignal		is std_ulogic;
 
 -------------------------------------------------------------------------------
+-- OpCodes
+-------------------------------------------------------------------------------
+subtype aOpCode 		is std_ulogic_vector(6 downto 0);
+subtype aFunct3			is std_ulogic_vector(2 downto 0);
+
+constant cOpRType		: aOpCode := "0110011";
+constant cOpIArith		: aOpCode := "0010011";
+constant cOpILoad		: aOpCode := "0000011";
+constant cOpSType		: aOpCode := "0100011";
+constant cOpBType		: aOpCode := "1100011";
+
+constant cMemByte				: aFunct3 := "000";
+constant cMemHalfWord			: aFunct3 := "001";
+constant cMemWord				: aFunct3 := "010";
+constant cMemUnsignedByte 		: aFunct3 := "100";
+constant cMemUnsignedHalfWord 	: aFunct3 := "101";
+
+constant cEnableByte		: std_logic_vector(3 downto 0) := "0001";
+constant cEnableHalfWord 	: std_logic_vector(3 downto 0) := "0011";
+constant cEnableWord		: std_logic_vector(3 downto 0) := "1111";
+
+-------------------------------------------------------------------------------
 -- Control Unit
 -------------------------------------------------------------------------------
 type aControlUnitState is (Fetch, ReadReg, Calc, DataAccess, WriteReg);
 
 constant cALUSrcRegFile : aCtrlSignal := '0';
 constant cALUSrcImmGen  : aCtrlSignal := '1';
+constant cMemToRegALU	: aCtrlSignal := '0';
+constant cMemToRegMem	: aCtrlSignal := '1';
 
 -------------------------------------------------------------------------------
 -- Program Counter
