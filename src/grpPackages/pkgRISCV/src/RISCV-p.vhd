@@ -40,6 +40,7 @@ constant cOpIArith		: aOpCode := "0010011";
 constant cOpILoad		: aOpCode := "0000011";
 constant cOpSType		: aOpCode := "0100011";
 constant cOpBType		: aOpCode := "1100011";
+constant cOpJType		: aOpCode := "1101111";
 
 constant cMemByte				: aFunct3 := "000";
 constant cMemHalfWord			: aFunct3 := "001";
@@ -60,6 +61,11 @@ constant cALUSrcRegFile : aCtrlSignal := '0';
 constant cALUSrcImmGen  : aCtrlSignal := '1';
 constant cMemToRegALU	: aCtrlSignal := '0';
 constant cMemToRegMem	: aCtrlSignal := '1';
+
+constant cNoJump		: aCtrlSignal := '0';
+constant cJump			: aCtrlSignal := '1';
+constant cNoIncPC		: aCtrlSignal := '0';
+constant cIncPC			: aCtrlSignal := '1';
 
 -------------------------------------------------------------------------------
 -- Program Counter
@@ -110,10 +116,10 @@ subtype aALUValue		is std_ulogic_vector(cALUWidth-1 downto 0);
 	curInst						: aInst;
 	-- control signals
 	ctrlState					: aControlUnitState;
-	aluSrc						: aCtrlSignal;
     memWrite                    : aCtrlSignal;
     memRead                     : aCtrlSignal;
     memToReg                    : aCtrlSignal;
+	jumpToAdr					: aCtrlSignal;
 
 	-- signals for program counter
 	curPC						: aPCValue;
@@ -134,10 +140,10 @@ subtype aALUValue		is std_ulogic_vector(cALUWidth-1 downto 0);
 	  curInst 		=> (others => '0'),
 
 	  ctrlState		=> Fetch,
-  	  aluSrc		=> '0',
       memWrite      => '0',
       memRead       => '0',
       memToReg      => '0',
+	  jumpToAdr		=> '0',
 
 	  curPC			=> (others => '0'),
 	  incPC			=> '0',

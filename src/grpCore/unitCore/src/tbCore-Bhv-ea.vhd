@@ -38,6 +38,8 @@ architecture bhv of tbCore is
         3 => x"04",
         4 => x"FF",
         5 => x"FE",
+        6 => x"FD",
+        7 => x"FC",
         others=>(others=>'0')
     );
 
@@ -126,8 +128,6 @@ begin
             writeDataMemory : for i in 0 to cByteWidth-1 loop
                 if dataByteEnable(i) = '1' then
                     DataMem(to_integer(unsigned(dataAddress))+i) <= dataWriteData(((i+1)*cByte)-1 downto i*cByte);
-                else
-                    DataMem(to_integer(unsigned(dataAddress))+i) <= (others=>'0');
                 end if;
             end loop;
         end if;

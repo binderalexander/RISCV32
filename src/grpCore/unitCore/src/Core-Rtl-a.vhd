@@ -36,11 +36,17 @@ begin
 end process;
 
 Comb: process (R, RegFile, avm_i_readdata, avm_d_readdata)
-    variable vRegReadData2      : aRegValue := (others=>'0');
-	variable vAluRes            : aALUValue := (others=>'0');
-	variable vImm               : aImm	    := (others=>'0');
-    variable vDataMemReadData   : aWord     := (others=>'0');
+    variable vRegReadData2      : aRegValue   := (others=>'0');
+    variable vRegWriteData      : aRegValue   := (others=>'0');
+	variable vAluRes            : aALUValue   := (others=>'0');
+    variable vAluSrc            : aCtrlSignal := '0';
+	variable vImm               : aImm	      := (others=>'0');
+    variable vPCPlus4           : aPCValue    := (others=>'0');
+    variable vNextPC            : aPCValue    := (others=>'0');
+    variable vJumpAdr           : aPCValue    := (others=>'0');
+    variable vDataMemReadData   : aWord       := (others=>'0');
     variable vDataMemByteEnable : std_logic_vector(3 downto 0) := (others=>'0');
+
 
 begin
     NxR <= R;
@@ -49,10 +55,11 @@ begin
     -------------------------------------------------------------------------------
     -- Control Unit
     -------------------------------------------------------------------------------
-    NxR.incPC       <= '0';
+    NxR.incPC       <= cNoIncPC;
     NxR.memRead     <= '0';
     NxR.memWrite    <= '0';
     NxR.memToReg    <= cMemToRegALU;
+    NxR.jumpToAdr   <= cNoJump;
 
     if R.ctrlState = Fetch then
         NxR.ctrlState <= ReadReg;
@@ -87,16 +94,19 @@ begin
 
                 -- Immediate or Register Instruction
 				if R.curInst(5) = '1' then
-					NxR.aluSrc <= cALUSrcRegFile;
+                    vAluSrc := cALUSrcRegFile;
 				elsif R.curInst(5) = '0' then
-					NxR.aluSrc <= cALUSrcImmGen;
+                    vAluSrc := cALUSrcImmGen;
 				else
 					null;
 				end if;
 
             when cOpILoad | cOpSType =>
                 NxR.aluOp   <= ALUOpAdd;
-                NxR.aluSrc  <= cALUSrcImmGen;
+                vAluSrc     := cALUSrcImmGen;
+
+            when cOpJType =>
+                NxR.aluOp   <= ALUOpNOP;
 
             when others =>
                 null; -- not implemented yet
@@ -122,6 +132,10 @@ begin
             when cOpSType =>
                 NxR.memWrite    <= '1';
                 NxR.ctrlState   <= DataAccess;
+            -- J-Type Jump Instruction
+            when cOpJType =>
+                NxR.regWriteEn  <= '1';
+                NxR.jumpToAdr   <= cJump;
 
             when others =>
                 null; -- not implemented yet
@@ -150,13 +164,8 @@ begin
     -------------------------------------------------------------------------------
     -- Program Counter
     -------------------------------------------------------------------------------
-    if R.incPC = '1' then
-        NxR.curPC <= std_ulogic_vector(to_unsigned(
-                        to_integer(unsigned(R.curPC))+ cPCIncrement, cPCWidth));
-    else
-        NxR.curPC <= R.curPC;
-    end if;
-
+    vPCPlus4 := std_ulogic_vector(to_unsigned(
+        to_integer(unsigned(R.curPC)) + cPCIncrement, cPCWidth));
 
     -------------------------------------------------------------------------------
     -- Instruction Memory
@@ -284,18 +293,45 @@ begin
     end case;
 
     -------------------------------------------------------------------------------
+    -- Jump Adress Calculation
+    -------------------------------------------------------------------------------
+    -- TODO: Exception if Adress is missaligned
+    vJumpAdr := std_ulogic_vector(resize(unsigned(vImm) + unsigned(R.curPC), cImmLen));
+
+    -------------------------------------------------------------------------------
     -- Multiplexer
 	-------------------------------------------------------------------------------
-	if R.aluSrc = cALUSrcRegFile then
-		NxR.aluData2 <= vRegReadData2;
+
+    -- MUX ALUData2
+    if vAluSrc = cALUSrcRegFile then
+    	NxR.aluData2 <= vRegReadData2;
 	else
 		NxR.aluData2 <= vImm;
 	end if;
 
+    -- Mux WriteRegSource
     if R.memToReg = cMemToRegALU then
-        NxR.regWriteData <= vAluRes;
+        vRegWriteData := vAluRes;
     else
-        NxR.regWriteData <= vDataMemReadData;
+        vRegWriteData := vDataMemReadData;
+    end if;
+    if R.jumpToAdr = cNoJump then
+        NxR.regWriteData <= vRegWriteData;
+    else
+        NxR.regWriteData <= vPCPlus4;
+    end if;
+
+
+    -- Mux PC
+    if R.incPC = cNoIncPC then
+        vNextPC := R.curPC;
+    else
+        vNextPC := vPCPlus4;
+    end if;
+    if R.jumpToAdr = cNoJump then
+        NxR.curPC <= vNextPC;
+    else
+        NxR.curPC <= vJumpAdr;
     end if;
 
 
