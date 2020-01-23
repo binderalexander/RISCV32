@@ -15,9 +15,17 @@ _start:
 	sh x1, 2(x0)
 	sw x1, 4(x0)
 
+someFunc:
+	addi x8, x4, 1
+	addi x8, x0, 2
+	addi x8, x0, 4
+	jr ra
+
 test:
 	#load 1 sign extension
 	lb x2, 1(x0)
+	jal someFunc
+
 loop:
 	lh x3, 1(x0)
 	lw x4, 1(x0)

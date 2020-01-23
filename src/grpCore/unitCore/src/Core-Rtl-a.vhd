@@ -102,18 +102,30 @@ begin
 				end if;
 
             when cOpILoad | cOpSType =>
-                NxR.aluOp   <= ALUOpAdd;
-                vAluSrc     := cALUSrcImmGen;
+                NxR.aluOp       <= ALUOpAdd;
+                vAluSrc         := cALUSrcImmGen;
 
             when cOpJType =>
-                NxR.aluOp   <= ALUOpNOP;
+                NxR.aluOp       <= ALUOpNOP;
+                NxR.jumpToAdr   <= cJump;
+
+            when cOpIJumpReg =>
+                NxR.aluOp       <= ALUOpAdd;
+                vAluSrc         := cALUSrcImmGen;
+                NxR.jumpToAdr   <= cJump;
+
+            when cOpBType =>
+                NxR.ALUOp       <= ALUOpSub;
+                -- TODO: Check if jump gets taken
+
+
 
             when others =>
                 null; -- not implemented yet
 
         end case;
 
-        NxR.incPC     <= '1';
+        NxR.incPC     <= cIncPC;
         NxR.ctrlState <= Calc;
 
     elsif R.ctrlState = Calc then
@@ -133,9 +145,10 @@ begin
                 NxR.memWrite    <= '1';
                 NxR.ctrlState   <= DataAccess;
             -- J-Type Jump Instruction
-            when cOpJType =>
+            when cOpJType | cOpIJumpReg =>
                 NxR.regWriteEn  <= '1';
-                NxR.jumpToAdr   <= cJump;
+                NxR.ctrlState   <= WriteReg;
+                null;
 
             when others =>
                 null; -- not implemented yet
@@ -292,12 +305,27 @@ begin
             vAluRes := (others => '0');
     end case;
 
+    -- Set Status Register
+    if to_integer(unsigned(vAluRes)) = 0 then
+        NxR.statusReg(cStatusZeroBit) <= '1';
+    else
+        NxR.statusReg(cStatusZeroBit) <= '0';
+    end if;
+    if to_integer(unsigned(vAluRes)) < 0 then
+        NxR.statusReg(cStatusNegBit) <= '1';
+    else
+        NxR.statusReg(cStatusNegBit) <= '0';
+    end if;
+
     -------------------------------------------------------------------------------
     -- Jump Adress Calculation
     -------------------------------------------------------------------------------
     -- TODO: Exception if Adress is missaligned
-    vJumpAdr := std_ulogic_vector(resize(unsigned(vImm) + unsigned(R.curPC), cImmLen));
-
+    if R.curInst(3) = '1' then  -- JAL or JALR
+        vJumpAdr := std_ulogic_vector(resize(unsigned(vImm) + unsigned(R.curPC), cImmLen));
+    else
+        vJumpAdr := vAluRes;
+    end if;
     -------------------------------------------------------------------------------
     -- Multiplexer
 	-------------------------------------------------------------------------------

@@ -29,6 +29,9 @@ subtype aInst	      	is std_ulogic_vector(cInstWidth-1 downto 0);
 subtype aWord           is std_ulogic_vector(cBitWidth-1 downto 0);
 subtype aCtrlSignal		is std_ulogic;
 
+constant cStatusZeroBit : natural := 0;
+constant cStatusNegBit	: natural := 1;
+
 -------------------------------------------------------------------------------
 -- OpCodes
 -------------------------------------------------------------------------------
@@ -38,6 +41,7 @@ subtype aFunct3			is std_ulogic_vector(2 downto 0);
 constant cOpRType		: aOpCode := "0110011";
 constant cOpIArith		: aOpCode := "0010011";
 constant cOpILoad		: aOpCode := "0000011";
+constant cOpIJumpReg	: aOpCode := "1100111";
 constant cOpSType		: aOpCode := "0100011";
 constant cOpBType		: aOpCode := "1100011";
 constant cOpJType		: aOpCode := "1101111";
@@ -114,6 +118,8 @@ subtype aALUValue		is std_ulogic_vector(cALUWidth-1 downto 0);
   type aRegSet is record
 	-- common signals
 	curInst						: aInst;
+	statusReg					: aRegValue;
+
 	-- control signals
 	ctrlState					: aControlUnitState;
     memWrite                    : aCtrlSignal;
@@ -138,6 +144,7 @@ subtype aALUValue		is std_ulogic_vector(cALUWidth-1 downto 0);
 
   constant cInitValRegSet : aRegSet := (
 	  curInst 		=> (others => '0'),
+	  statusReg		=> (others => '0'),
 
 	  ctrlState		=> Fetch,
       memWrite      => '0',
