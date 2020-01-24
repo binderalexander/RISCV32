@@ -47,7 +47,6 @@ Comb: process (R, RegFile, avm_i_readdata, avm_d_readdata)
     variable vDataMemReadData   : aWord       := (others=>'0');
     variable vDataMemByteEnable : std_logic_vector(3 downto 0) := (others=>'0');
 
-
 begin
     NxR <= R;
     NxRegFile <= RegFile;
@@ -66,17 +65,20 @@ begin
 
     elsif R.ctrlState = ReadReg then
 
+        NxR.incPC     <= cIncPC;
+        NxR.ctrlState <= Calc;
+
         case R.curInst(6 downto 0) is
 
             when cOpRType | cOpIArith =>
                 -- ALU OpCode
                 case R.curInst(14 downto 12) is
-                    when "000" =>   						-- add/sub
-                        case R.curInst(30) is
-                            when '0' => NxR.aluOp <= ALUOpAdd;
-                            when '1' => NxR.aluOp <= ALUOpSub;
-                            when others => null;
-                        end case;
+                    when "000" => -- add/sub
+                        if R.curInst(6 downto 0) = cOpRType and R.curInst(30) = '1' then
+                            NxR.aluOp <= ALUOpSub;
+                        else
+                            NxR.aluOp <= ALUOpAdd;
+                        end if;
                     when "001" => NxR.aluOp <= ALUOpSLL; 	-- shift left logical
 					when "010" => NxR.aluOp <= ALUOpSLT;	-- signed less than
 					when "011" => NxR.aluOp <= ALUOpSLTU;	-- unsigned less than
@@ -116,17 +118,14 @@ begin
 
             when cOpBType =>
                 NxR.ALUOp       <= ALUOpSub;
-                -- TODO: Check if jump gets taken
-
-
+                vAluSrc         := cALUSrcRegFile;
+                NxR.incPC       <= cNoIncPC;
 
             when others =>
                 null; -- not implemented yet
 
         end case;
 
-        NxR.incPC     <= cIncPC;
-        NxR.ctrlState <= Calc;
 
     elsif R.ctrlState = Calc then
         case R.curInst(6 downto 0) is   -- check opcode
@@ -149,6 +148,10 @@ begin
                 NxR.regWriteEn  <= '1';
                 NxR.ctrlState   <= WriteReg;
                 null;
+            -- B-Type Conditional Branch
+            when cOpBType =>
+                NxR.ctrlState   <= CheckJump;
+
 
             when others =>
                 null; -- not implemented yet
@@ -165,6 +168,22 @@ begin
             when others =>
                 null;
         end case;
+
+    elsif R.ctrlState = CheckJump then
+        NxR.incPC       <= cIncPC;
+        case R.curInst(14 downto 12) is
+            when cCondEq =>
+                if R.statusReg(cStatusZeroBit) = '1' then
+                    NxR.jumpToAdr   <= cJump;
+                end if;
+            when cCondNe =>
+                if R.statusReg(cStatusZeroBit) = '0' then
+                    NxR.jumpToAdr   <= cJump;
+                end if;
+            when others =>
+                null;
+        end case;
+        NxR.ctrlState <= WriteReg;
 
     elsif R.ctrlState = WriteReg then
         NxR.regWriteEn  <= '0';
@@ -321,10 +340,10 @@ begin
     -- Jump Adress Calculation
     -------------------------------------------------------------------------------
     -- TODO: Exception if Adress is missaligned
-    if R.curInst(3) = '1' then  -- JAL or JALR
-        vJumpAdr := std_ulogic_vector(resize(unsigned(vImm) + unsigned(R.curPC), cImmLen));
-    else
+    if R.curInst(6 downto 0) = cOpIJumpReg then  -- JAL or JALR
         vJumpAdr := vAluRes;
+    else
+        vJumpAdr := std_ulogic_vector(resize(unsigned(vImm) + unsigned(R.curPC), cImmLen));
     end if;
     -------------------------------------------------------------------------------
     -- Multiplexer

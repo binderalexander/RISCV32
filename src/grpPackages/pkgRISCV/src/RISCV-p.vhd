@@ -56,10 +56,17 @@ constant cEnableByte		: std_logic_vector(3 downto 0) := "0001";
 constant cEnableHalfWord 	: std_logic_vector(3 downto 0) := "0011";
 constant cEnableWord		: std_logic_vector(3 downto 0) := "1111";
 
+constant cCondEq		: aFunct3 := "000";
+constant cCondNe		: aFunct3 := "001";
+constant cCondLt		: aFunct3 := "100";
+constant cCondGe		: aFunct3 := "101";
+constant cCondLtu		: aFunct3 := "110";
+constant cCondGeu		: aFunct3 := "111";
+
 -------------------------------------------------------------------------------
 -- Control Unit
 -------------------------------------------------------------------------------
-type aControlUnitState is (Fetch, ReadReg, Calc, DataAccess, WriteReg);
+type aControlUnitState is (Fetch, ReadReg, Calc, DataAccess, CheckJump, WriteReg);
 
 constant cALUSrcRegFile : aCtrlSignal := '0';
 constant cALUSrcImmGen  : aCtrlSignal := '1';

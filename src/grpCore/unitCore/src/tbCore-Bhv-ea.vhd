@@ -85,7 +85,7 @@ ReadROM: process is
     variable char_v : character;
     variable i : natural := 0;
 begin
-    file_open(char_file, "../../../../../test/checkL.bin");
+    file_open(char_file, "../../../../../test/checkStatus.bin");
     while not endfile(char_file) and (i < InstMemSize) loop
         read(char_file, char_v);
         InstMem(i) <= std_logic_vector(to_unsigned(character'pos(char_v), cByte));
