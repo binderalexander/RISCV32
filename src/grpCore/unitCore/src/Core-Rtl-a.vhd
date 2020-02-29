@@ -349,32 +349,33 @@ begin
     -- Multiplexer
 	-------------------------------------------------------------------------------
 
-    -- MUX ALUData2
+    -- MUX ALUSrc
     if vAluSrc = cALUSrcRegFile then
     	NxR.aluData2 <= vRegReadData2;
 	else
 		NxR.aluData2 <= vImm;
 	end if;
 
-    -- Mux WriteRegSource
+    -- Mux WriteRegSrc0
     if R.memToReg = cMemToRegALU then
         vRegWriteData := vAluRes;
     else
         vRegWriteData := vDataMemReadData;
     end if;
+        -- Mux WriteRegSrc1
     if R.jumpToAdr = cNoJump then
         NxR.regWriteData <= vRegWriteData;
     else
         NxR.regWriteData <= vPCPlus4;
     end if;
 
-
-    -- Mux PC
+    -- Mux PCInc
     if R.incPC = cNoIncPC then
         vNextPC := R.curPC;
     else
         vNextPC := vPCPlus4;
     end if;
+    -- Mux PCJump
     if R.jumpToAdr = cNoJump then
         NxR.curPC <= vNextPC;
     else
