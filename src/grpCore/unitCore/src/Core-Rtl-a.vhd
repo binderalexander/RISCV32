@@ -151,8 +151,6 @@ begin
             -- B-Type Conditional Branch
             when cOpBType =>
                 NxR.ctrlState   <= CheckJump;
-
-
             when others =>
                 null; -- not implemented yet
 
@@ -178,6 +176,14 @@ begin
                 end if;
             when cCondNe =>
                 if R.statusReg(cStatusZeroBit) = '0' then
+                    NxR.jumpToAdr   <= cJump;
+                end if;
+            when cCondLt =>
+                if R.statusReg(cStatusNegBit) = '1' then
+                    NxR.jumpToAdr   <= cJump;
+                end if;
+            when cCondGe =>
+                if R.statusReg(cStatusNegBit) = '0' then
                     NxR.jumpToAdr   <= cJump;
                 end if;
             when others =>
