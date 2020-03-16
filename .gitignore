@@ -1,1 +1,7 @@
 literature/
+
+# Ignore system specific bat files
+MapPathToDrive.bat
+src/MapPathToDrive.bat
+src/Paths.bat
+
