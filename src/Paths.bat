@@ -32,8 +32,8 @@ rem ****************************************************************************
 
 rem *******************************************************************************
 rem * Questasim
-set MY_QUESTASIM_PATH=C:\intelFPGA\18.1\modelsim_ase
-set MY_QUESTASIM_EXECUTABLE_MAIN=C:\intelFPGA\18.1\modelsim_ase\win32aloem
+set MY_QUESTASIM_PATH=C:\intelFPGA_lite\18.1\modelsim_ase
+set MY_QUESTASIM_EXECUTABLE_MAIN=C:\intelFPGA_lite\18.1\modelsim_ase\win32aloem
 set MY_QUESTASIM_EXECUTABLE_VSIM=
 rem *******************************************************************************
 

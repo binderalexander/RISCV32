@@ -36,15 +36,16 @@ begin
 end process;
 
 Comb: process (R, RegFile, avm_i_readdata, avm_d_readdata)
-    variable vRegReadData2      : aRegValue   := (others=>'0');
-    variable vRegWriteData      : aRegValue   := (others=>'0');
-	variable vAluRes            : aALUValue   := (others=>'0');
-    variable vAluSrc            : aCtrlSignal := '0';
-	variable vImm               : aImm	      := (others=>'0');
-    variable vPCPlus4           : aPCValue    := (others=>'0');
-    variable vNextPC            : aPCValue    := (others=>'0');
-    variable vJumpAdr           : aPCValue    := (others=>'0');
-    variable vDataMemReadData   : aWord       := (others=>'0');
+    variable vRegReadData2      : aRegValue     := (others=>'0');
+    variable vRegWriteData      : aRegValue     := (others=>'0');
+    variable vRawAluRes         : aRawALUValue  := (others=>'0');
+	variable vAluRes            : aALUValue     := (others=>'0');
+    variable vAluSrc            : aCtrlSignal   := '0';
+	variable vImm               : aImm	        := (others=>'0');
+    variable vPCPlus4           : aPCValue      := (others=>'0');
+    variable vNextPC            : aPCValue      := (others=>'0');
+    variable vJumpAdr           : aPCValue      := (others=>'0');
+    variable vDataMemReadData   : aWord         := (others=>'0');
     variable vDataMemByteEnable : std_logic_vector(3 downto 0) := (others=>'0');
 
 begin
@@ -126,7 +127,6 @@ begin
 
         end case;
 
-
     elsif R.ctrlState = Calc then
         case R.curInst(6 downto 0) is   -- check opcode
             -- R-Type or I-Type Register Instruction
@@ -184,6 +184,14 @@ begin
                 end if;
             when cCondGe =>
                 if R.statusReg(cStatusNegBit) = '0' then
+                    NxR.jumpToAdr   <= cJump;
+                end if;
+            when cCondLtu =>
+                if R.statusReg(cStatusCarryBit) = '1' then
+                    NxR.jumpToAdr   <= cJump;
+                end if;
+            when cCondGeu =>
+                if R.statusReg(cStatusCarryBit) = '0' then
                     NxR.jumpToAdr   <= cJump;
                 end if;
             when others =>
@@ -289,58 +297,63 @@ begin
     -------------------------------------------------------------------------------
     case R.aluOp is
         when ALUOpAdd =>
-            vAluRes := std_ulogic_vector(resize(
-                unsigned(R.regReadData1) + (unsigned(R.aluData2)), cALUWidth));
+            vRawAluRes := std_ulogic_vector(resize(
+                resize(unsigned(R.regReadData1), cALUWidth+1) + 
+                resize(unsigned(R.aluData2), cALUWidth+1), cALUWidth+1));
         when ALUOpSub =>
-            vAluRes := std_ulogic_vector(resize(
-                unsigned(R.regReadData1) - unsigned(R.aluData2), cALUWidth));
+            vRawAluRes := std_ulogic_vector(resize(
+                resize(unsigned(R.regReadData1), cALUWidth+1) - 
+                resize(unsigned(R.aluData2), cALUWidth+1), cALUWidth+1));
         when ALUOpSLT =>
             if signed(R.regReadData1) < signed(R.aluData2) then
-                vAluRes := (0 => '1', others => '0');
+                vRawAluRes := (0 => '1', others => '0');
             else
-                vAluRes := (others => '0');
+                vRawAluRes := (others => '0');
             end if;
         when ALUOpSLTU =>
             if unsigned(R.regReadData1) < unsigned(R.aluData2) then
-                vAluRes := (0 => '1', others => '0');
+                vRawAluRes := (0 => '1', others => '0');
             else
-                vAluRes := (others => '0');
+                vRawAluRes := (others => '0');
             end if;
         when ALUOpAnd =>
-            vAluRes := R.regReadData1 AND R.aluData2;
+            vRawAluRes := '0' & (R.regReadData1 AND R.aluData2);
         when ALUOpOr =>
-            vAluRes := R.regReadData1 OR R.aluData2;
+            vRawAluRes := '0' & (R.regReadData1 OR R.aluData2);
         when ALUOpXor =>
-            vAluRes := R.regReadData1 XOR R.aluData2;
+            vRawAluRes := '0' & (R.regReadData1 XOR R.aluData2);
         when ALUOpSLL =>
-            vAluRes := std_ulogic_vector(
-                shift_left(unsigned(R.regReadData1),
+            vRawAluRes := std_ulogic_vector(
+                shift_left(unsigned('0' & R.regReadData1),
                 to_integer(unsigned(R.aluData2(4 downto 0)))));
         when ALUOpSRL =>
-            vAluRes := std_ulogic_vector(
-                shift_right(unsigned(R.regReadData1),
+            vRawAluRes := std_ulogic_vector(
+                shift_right(unsigned('0' & R.regReadData1),
                 to_integer(unsigned(R.aluData2(4 downto 0)))));
         when ALUOpSRA =>
-            vAluRes := std_ulogic_vector(
-                shift_right(signed(R.regReadData1),
+            vRawAluRes := std_ulogic_vector(
+                shift_right(signed('0' & R.regReadData1),
                 to_integer(unsigned(R.aluData2(4 downto 0)))));
         when ALUOpNOP =>
-            vAluRes := (others => '0');
+            vRawAluRes := (others => '0');
         when others =>
-            vAluRes := (others => '0');
+            vRawAluRes := (others => '0');
     end case;
+    -- Remove Carry Bit
+    vAluRes := std_ulogic_vector(resize(unsigned(vRawAluRes), cALUWidth));
 
     -- Set Status Register
-    if to_integer(unsigned(vAluRes)) = 0 then
+    if to_integer(signed(vAluRes)) = 0 then
         NxR.statusReg(cStatusZeroBit) <= '1';
     else
         NxR.statusReg(cStatusZeroBit) <= '0';
     end if;
-    if to_integer(unsigned(vAluRes)) < 0 then
+    if to_integer(signed(vAluRes)) < 0 then
         NxR.statusReg(cStatusNegBit) <= '1';
     else
         NxR.statusReg(cStatusNegBit) <= '0';
     end if;
+    NxR.statusReg(cStatusCarryBit) <= vRawAluRes(vRawAluRes'high);
 
     -------------------------------------------------------------------------------
     -- Jump Adress Calculation

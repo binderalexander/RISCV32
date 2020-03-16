@@ -29,8 +29,9 @@ subtype aInst	      	is std_ulogic_vector(cInstWidth-1 downto 0);
 subtype aWord           is std_ulogic_vector(cBitWidth-1 downto 0);
 subtype aCtrlSignal		is std_ulogic;
 
-constant cStatusZeroBit : natural := 0;
-constant cStatusNegBit	: natural := 1;
+constant cStatusZeroBit 	: natural := 0;
+constant cStatusNegBit		: natural := 1;
+constant cStatusCarryBit 	: natural := 2;
 
 -------------------------------------------------------------------------------
 -- OpCodes
@@ -116,7 +117,9 @@ type aALUOp is (
 	ALUOpSLL, ALUOpSRL, ALUOpSRA,	-- shift left/right logical/arithmetic
 	ALUOpNOP
 );
+subtype aRawALUValue	is std_ulogic_vector(cALUWidth downto 0);	-- incl. overflow bit
 subtype aALUValue		is std_ulogic_vector(cALUWidth-1 downto 0);
+
 
 -------------------------------------------------------------------------------
 -- RegSet
