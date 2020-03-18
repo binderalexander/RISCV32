@@ -36,10 +36,12 @@ begin
 end process;
 
 Comb: process (R, RegFile, avm_i_readdata, avm_d_readdata)
+    variable vRegReadData1      : aRegValue     := (others=>'0');
     variable vRegReadData2      : aRegValue     := (others=>'0');
     variable vRegWriteData      : aRegValue     := (others=>'0');
     variable vRawAluRes         : aRawALUValue  := (others=>'0');
-	variable vAluRes            : aALUValue     := (others=>'0');
+    variable vAluRes            : aALUValue     := (others=>'0');
+    variable vAluSrc1           : aCtrl2Signal  := (others=>'0');
     variable vAluSrc            : aCtrlSignal   := '0';
 	variable vImm               : aImm	        := (others=>'0');
     variable vPCPlus4           : aPCValue      := (others=>'0');
@@ -122,6 +124,16 @@ begin
                 vAluSrc         := cALUSrcRegFile;
                 NxR.incPC       <= cNoIncPC;
 
+            when cOpLUI =>
+                NxR.ALUOp       <= ALUOpAdd;
+                vAluSrc         := cALUSrcImmGen;
+                vAluSrc1        := cALUSrc1Zero;
+
+            when cOpAUIPC =>
+                NxR.ALUOp       <= ALUOpAdd;
+                vAluSrc         := cALUSrcImmGen;
+                vAluSrc1        := cALUSrc1PC;
+
             when others =>
                 null; -- not implemented yet
 
@@ -132,7 +144,7 @@ begin
             -- R-Type or I-Type Register Instruction
             when cOpRType | cOpIArith =>
             	NxR.regWriteEn  <= '1';
-                NxR.memToReg    <= cMemToRegALU;
+                NxR.memToReg    <= cMemToRegALU;    --TODO: ist schon default wert ?!?
                 NxR.ctrlState   <= WriteReg;
             -- I-Type Load Instruction
             when cOpILoad =>
@@ -151,6 +163,10 @@ begin
             -- B-Type Conditional Branch
             when cOpBType =>
                 NxR.ctrlState   <= CheckJump;
+            -- U-Type Load Immediate
+            when cOpLUI | cOpAUIPC =>
+                NxR.regWriteEn  <= '1';
+                NxR.ctrlState   <= WriteReg;
             when others =>
                 null; -- not implemented yet
 
@@ -254,7 +270,7 @@ begin
     -- Register File
     -------------------------------------------------------------------------------
     -- read registers
-    NxR.regReadData1    <= RegFile(to_integer(unsigned(R.curInst(19 downto 15))));
+    vRegReadData1       := RegFile(to_integer(unsigned(R.curInst(19 downto 15))));
     vRegReadData2       := RegFile(to_integer(unsigned(R.curInst(24 downto 20))));
 
     -- write register
@@ -298,41 +314,41 @@ begin
     case R.aluOp is
         when ALUOpAdd =>
             vRawAluRes := std_ulogic_vector(resize(
-                resize(unsigned(R.regReadData1), cALUWidth+1) + 
+                resize(unsigned(R.aluData1), cALUWidth+1) + 
                 resize(unsigned(R.aluData2), cALUWidth+1), cALUWidth+1));
         when ALUOpSub =>
             vRawAluRes := std_ulogic_vector(resize(
-                resize(unsigned(R.regReadData1), cALUWidth+1) - 
+                resize(unsigned(R.aluData1), cALUWidth+1) - 
                 resize(unsigned(R.aluData2), cALUWidth+1), cALUWidth+1));
         when ALUOpSLT =>
-            if signed(R.regReadData1) < signed(R.aluData2) then
+            if signed(R.aluData1) < signed(R.aluData2) then
                 vRawAluRes := (0 => '1', others => '0');
             else
                 vRawAluRes := (others => '0');
             end if;
         when ALUOpSLTU =>
-            if unsigned(R.regReadData1) < unsigned(R.aluData2) then
+            if unsigned(R.aluData1) < unsigned(R.aluData2) then
                 vRawAluRes := (0 => '1', others => '0');
             else
                 vRawAluRes := (others => '0');
             end if;
         when ALUOpAnd =>
-            vRawAluRes := '0' & (R.regReadData1 AND R.aluData2);
+            vRawAluRes := '0' & (R.aluData1 AND R.aluData2);
         when ALUOpOr =>
-            vRawAluRes := '0' & (R.regReadData1 OR R.aluData2);
+            vRawAluRes := '0' & (R.aluData1 OR R.aluData2);
         when ALUOpXor =>
-            vRawAluRes := '0' & (R.regReadData1 XOR R.aluData2);
+            vRawAluRes := '0' & (R.aluData1 XOR R.aluData2);
         when ALUOpSLL =>
             vRawAluRes := std_ulogic_vector(
-                shift_left(unsigned('0' & R.regReadData1),
+                shift_left(unsigned('0' & R.aluData1),
                 to_integer(unsigned(R.aluData2(4 downto 0)))));
         when ALUOpSRL =>
             vRawAluRes := std_ulogic_vector(
-                shift_right(unsigned('0' & R.regReadData1),
+                shift_right(unsigned('0' & R.aluData1),
                 to_integer(unsigned(R.aluData2(4 downto 0)))));
         when ALUOpSRA =>
             vRawAluRes := std_ulogic_vector(
-                shift_right(signed('0' & R.regReadData1),
+                shift_right(signed('0' & R.aluData1),
                 to_integer(unsigned(R.aluData2(4 downto 0)))));
         when ALUOpNOP =>
             vRawAluRes := (others => '0');
@@ -364,6 +380,7 @@ begin
     else
         vJumpAdr := std_ulogic_vector(resize(unsigned(vImm) + unsigned(R.curPC), cImmLen));
     end if;
+
     -------------------------------------------------------------------------------
     -- Multiplexer
 	-------------------------------------------------------------------------------
@@ -401,6 +418,18 @@ begin
         NxR.curPC <= vJumpAdr;
     end if;
 
+    -- Mux ALU1Src
+    case vAluSrc1 is
+        when cALUSrc1RegFile =>
+            NxR.aluData1 <= vRegReadData1;
+        when cALUSrc1Zero =>
+            NxR.aluData1 <= (others => '0');
+        when cALUSrc1PC =>
+            NxR.aluData1 <= R.curPC; -- TODO: anschauen ob der richtige!
+        when others =>
+            null;
+    
+    end case;
 
 end process;
 

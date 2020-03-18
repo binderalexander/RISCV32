@@ -28,6 +28,7 @@ constant cInstWidth		: natural := 32;
 subtype aInst	      	is std_ulogic_vector(cInstWidth-1 downto 0);
 subtype aWord           is std_ulogic_vector(cBitWidth-1 downto 0);
 subtype aCtrlSignal		is std_ulogic;
+subtype aCtrl2Signal	is std_ulogic_vector(1 downto 0);
 
 constant cStatusZeroBit 	: natural := 0;
 constant cStatusNegBit		: natural := 1;
@@ -46,6 +47,8 @@ constant cOpIJumpReg	: aOpCode := "1100111";
 constant cOpSType		: aOpCode := "0100011";
 constant cOpBType		: aOpCode := "1100011";
 constant cOpJType		: aOpCode := "1101111";
+constant cOpLUI			: aOpCode := "0110111";
+constant cOpAUIPC		: aOpCode := "0010111";
 
 constant cMemByte				: aFunct3 := "000";
 constant cMemHalfWord			: aFunct3 := "001";
@@ -69,15 +72,19 @@ constant cCondGeu		: aFunct3 := "111";
 -------------------------------------------------------------------------------
 type aControlUnitState is (Fetch, ReadReg, Calc, DataAccess, CheckJump, WriteReg);
 
-constant cALUSrcRegFile : aCtrlSignal := '0';
-constant cALUSrcImmGen  : aCtrlSignal := '1';
-constant cMemToRegALU	: aCtrlSignal := '0';
-constant cMemToRegMem	: aCtrlSignal := '1';
+constant cALUSrcRegFile 	: aCtrlSignal := '0';
+constant cALUSrcImmGen  	: aCtrlSignal := '1';
+constant cMemToRegALU		: aCtrlSignal := '0';
+constant cMemToRegMem		: aCtrlSignal := '1';
 
-constant cNoJump		: aCtrlSignal := '0';
-constant cJump			: aCtrlSignal := '1';
-constant cNoIncPC		: aCtrlSignal := '0';
-constant cIncPC			: aCtrlSignal := '1';
+constant cNoJump			: aCtrlSignal := '0';
+constant cJump				: aCtrlSignal := '1';
+constant cNoIncPC			: aCtrlSignal := '0';
+constant cIncPC				: aCtrlSignal := '1';
+
+constant cALUSrc1RegFile 	: aCtrl2Signal := "00";
+constant cALUSrc1Zero		: aCtrl2Signal := "01";
+constant cALUSrc1PC			: aCtrl2Signal := "10";
 
 -------------------------------------------------------------------------------
 -- Program Counter
@@ -141,14 +148,13 @@ subtype aALUValue		is std_ulogic_vector(cALUWidth-1 downto 0);
 	curPC						: aPCValue;
 	incPC						: aCtrlSignal;
 
-	-- signals for reading register file
-	regReadData1				: aRegValue;
 	-- signals for writing register file
 	regWriteEn					: aCtrlSignal;
 	regWriteData				: aRegValue;
 
 	-- signals for ALU
 	aluOp						: aALUOp;
+	aluData1					: aALUValue;
 	aluData2					: aALUValue;
   end record aRegSet;
 
@@ -165,12 +171,11 @@ subtype aALUValue		is std_ulogic_vector(cALUWidth-1 downto 0);
 	  curPC			=> (others => '0'),
 	  incPC			=> '0',
 
-	  regReadData1	=> (others => '0'),
-
 	  regWriteEn	=> '0',
 	  regWriteData	=> (others => '0'),
 
 	  aluOp			=> ALUOpNOP,
+	  aluData1		=> (others => '0'),
 	  aluData2		=> (others => '0')
   );
 
