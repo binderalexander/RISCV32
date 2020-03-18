@@ -72,7 +72,7 @@ constant cCondGeu		: aFunct3 := "111";
 -------------------------------------------------------------------------------
 -- Control Unit
 -------------------------------------------------------------------------------
-type aControlUnitState is (Fetch, ReadReg, Calc, DataAccess, CheckJump, WriteReg);
+type aControlUnitState is (Fetch, ReadReg, Calc, DataAccess, CheckJump, WriteReg, Wait0, Wait1);
 
 constant cALUSrcRegFile 	: aCtrlSignal := '0';
 constant cALUSrcImmGen  	: aCtrlSignal := '1';

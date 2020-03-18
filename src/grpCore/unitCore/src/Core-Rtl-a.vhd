@@ -70,6 +70,7 @@ begin
 
         NxR.incPC     <= cIncPC;
         NxR.ctrlState <= Calc;
+        vALUSrc1      := cALUSrc1RegFile;
 
         case R.curInst(6 downto 0) is
 
@@ -216,10 +217,16 @@ begin
             when others =>
                 null;
         end case;
-        NxR.ctrlState <= WriteReg;
+        NxR.ctrlState <= Wait0;
 
     elsif R.ctrlState = WriteReg then
         NxR.regWriteEn  <= '0';
+        NxR.ctrlState <= Fetch;
+
+    elsif R.ctrlState = Wait0 then
+        NxR.ctrlState <= Wait1;
+
+    elsif R.ctrlState = Wait1 then
         NxR.ctrlState <= Fetch;
 
     else
@@ -317,11 +324,11 @@ begin
     case R.aluOp is
         when ALUOpAdd =>
             vRawAluRes := std_ulogic_vector(resize(
-                resize(unsigned(R.aluData1), cALUWidth+1) + 
+                resize(unsigned(R.aluData1), cALUWidth+1) +
                 resize(unsigned(R.aluData2), cALUWidth+1), cALUWidth+1));
         when ALUOpSub =>
             vRawAluRes := std_ulogic_vector(resize(
-                resize(unsigned(R.aluData1), cALUWidth+1) - 
+                resize(unsigned(R.aluData1), cALUWidth+1) -
                 resize(unsigned(R.aluData2), cALUWidth+1), cALUWidth+1));
         when ALUOpSLT =>
             if signed(R.aluData1) < signed(R.aluData2) then
@@ -431,7 +438,7 @@ begin
             NxR.aluData1 <= R.curPC; -- TODO: anschauen ob der richtige!
         when others =>
             null;
-    
+
     end case;
 
 end process;
