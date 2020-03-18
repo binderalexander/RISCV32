@@ -49,6 +49,8 @@ constant cOpBType		: aOpCode := "1100011";
 constant cOpJType		: aOpCode := "1101111";
 constant cOpLUI			: aOpCode := "0110111";
 constant cOpAUIPC		: aOpCode := "0010111";
+constant cOpFence		: aOpCode := "0001111";
+constant cOpSys			: aOpCode := "1110011";
 
 constant cMemByte				: aFunct3 := "000";
 constant cMemHalfWord			: aFunct3 := "001";

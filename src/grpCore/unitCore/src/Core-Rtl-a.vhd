@@ -134,6 +134,9 @@ begin
                 vAluSrc         := cALUSrcImmGen;
                 vAluSrc1        := cALUSrc1PC;
 
+            when cOpFence | cOpSys =>   -- ignored instructions
+                NxR.ctrlState   <= Fetch;
+
             when others =>
                 null; -- not implemented yet
 
