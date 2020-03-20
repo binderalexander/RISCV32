@@ -23,13 +23,13 @@ end entity tbCore;
 
 architecture bhv of tbCore is
 
-    constant InstMemSize : natural := 256;
+    constant InstMemSize : natural := 2048;
     type aInstMem is array (0 to InstMemSize-1) of std_logic_vector(cByte-1 downto 0);
     signal InstMem : aInstMem := (
         others  => (others=>'0')
     );
 
-    constant DataMemSize : natural := 16;
+    constant DataMemSize : natural := 1024;
     type aDataMem is array (0 to DataMemSize-1) of std_logic_vector(cByte-1 downto 0);
     signal DataMem: aDataMem := (
         0 => x"81",
@@ -85,7 +85,7 @@ ReadROM: process is
     variable char_v : character;
     variable i : natural := 0;
 begin
-    file_open(char_file, "../../../../../test/checkU.bin");
+    file_open(char_file, "../../../../../test/rv32ui-p-add.bin");
     while not endfile(char_file) and (i < InstMemSize) loop
         read(char_file, char_v);
         InstMem(i) <= std_logic_vector(to_unsigned(character'pos(char_v), cByte));

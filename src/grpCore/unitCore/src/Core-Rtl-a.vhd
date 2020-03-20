@@ -57,11 +57,13 @@ begin
     -------------------------------------------------------------------------------
     -- Control Unit
     -------------------------------------------------------------------------------
-    NxR.incPC       <= cNoIncPC;
-    NxR.memRead     <= '0';
-    NxR.memWrite    <= '0';
-    NxR.memToReg    <= cMemToRegALU;
-    NxR.jumpToAdr   <= cNoJump;
+    NxR.incPC           <= cNoIncPC;
+    NxR.memRead         <= '0';
+    NxR.memWrite        <= '0';
+    NxR.memToReg        <= cMemToRegALU;
+    NxR.jumpToAdr       <= cNoJump;
+    NxR.csrRead         <= '0';
+    NxR.csrWriteMode    <= cModeNoWrite;
 
     if R.ctrlState = Fetch then
         NxR.ctrlState <= ReadReg;
@@ -135,8 +137,17 @@ begin
                 vAluSrc         := cALUSrcImmGen;
                 vAluSrc1        := cALUSrc1PC;
 
-            when cOpFence | cOpSys =>   -- ignored instructions
-                NxR.ctrlState   <= Fetch;
+            when cOpFence =>    -- implemented as NOP
+                NxR.ctrlState   <= Wait0;
+
+            when cOpSys =>
+                case R.curInst(14 downto 12) is
+                    when cSysEnv =>     -- TODO: trap
+                        NxR.ctrlState   <= Wait0;
+                    when others =>
+                        NxR.incPC       <= cNoIncPC;
+                        NxR.ctrlState   <= Calc;
+                end case;
 
             when others =>
                 null; -- not implemented yet
@@ -171,6 +182,28 @@ begin
             when cOpLUI | cOpAUIPC =>
                 NxR.regWriteEn  <= '1';
                 NxR.ctrlState   <= WriteReg;
+            -- CSR Instruction
+            when cOpSys =>
+                case R.curInst(14 downto 12) is
+                    when cSysRW | cSysRWI =>
+                        if R.curInst(11 downto 7) = "00000" then    NxR.csrRead <= '0';
+                        else                                        NxR.csrRead <= '1';
+                        end if;
+                        NxR.csrWriteMode <= cModeWrite;
+                    when cSysRS | cSysRSI =>
+                        NxR.csrRead <= '1';
+                        if R.curInst(19 downto 15) = "00000" then   NxR.csrWriteMode <= cModeNoWrite;
+                        else                                        NxR.csrWriteMode <= cModeSet;
+                        end if;
+                    when cSysRC | cSysRCI =>
+                        NxR.csrRead <= '1';
+                        if R.curInst(19 downto 15) = "00000" then   NxR.csrWriteMode <= cModeNoWrite;
+                        else                                        NxR.csrWriteMode <= cModeClear;
+                        end if;
+                    when others => null;
+                end case;
+                NxR.incPC     <= cIncPC;
+                NxR.ctrlState <= DataAccess;
             when others =>
                 null; -- not implemented yet
 
@@ -183,6 +216,9 @@ begin
                 NxR.ctrlState   <= WriteReg;
             when cOpSType =>
                 NxR.ctrlState   <= Fetch;
+            when cOpSys =>
+                NxR.regWriteEn  <= R.csrRead;
+                NxR.ctrlState   <= WriteReg;
             when others =>
                 null;
         end case;
@@ -392,6 +428,138 @@ begin
     end if;
 
     -------------------------------------------------------------------------------
+    -- CSR Unit
+    -------------------------------------------------------------------------------
+    if R.csrRead = '1' then
+        case R.curInst(31 downto 20) is
+            when cCsrUStatus    => NxR.csrReadData <= R.csrReg.ustatus;
+            when cCsrUIe        => NxR.csrReadData <= R.csrReg.uie;
+            when cCsrUTvec      => NxR.csrReadData <= R.csrReg.utvec;
+            when cCsrUScratch   => NxR.csrReadData <= R.csrReg.uscratch;
+            when cCsrUEpc       => NxR.csrReadData <= R.csrReg.uepc;
+            when cCsrUCause     => NxR.csrReadData <= R.csrReg.ucause;
+            when cCsrUTval      => NxR.csrReadData <= R.csrReg.utval;
+            when cCsrUIp        => NxR.csrReadData <= R.csrReg.uip;
+            when cCsrMVendorId  => NxR.csrReadData <= R.csrReg.mvendorid;
+            when cCsrMArchId    => NxR.csrReadData <= R.csrReg.marchid;
+            when cCsrMImpId     => NxR.csrReadData <= R.csrReg.mimpid;
+            when cCsrMHartId    => NxR.csrReadData <= R.csrReg.mhartid;
+            when cCsrMStatus    => NxR.csrReadData <= R.csrReg.mstatus;
+            when cCsrMIsa       => NxR.csrReadData <= R.csrReg.misa;
+            when cCsrMEdeleg    => NxR.csrReadData <= R.csrReg.medeleg;
+            when cCsrMIdeleg    => NxR.csrReadData <= R.csrReg.mideleg;
+            when cCsrMIe        => NxR.csrReadData <= R.csrReg.mie;
+            when cCsrMTvec      => NxR.csrReadData <= R.csrReg.mtvec;
+            when cCsrMCounteren => NxR.csrReadData <= R.csrReg.mcounteren;
+            when cCsrMScratch   => NxR.csrReadData <= R.csrReg.mscratch;
+            when cCsrMEpc       => NxR.csrReadData <= R.csrReg.mepc;
+            when cCsrMCause     => NxR.csrReadData <= R.csrReg.mcause;
+            when cCsrMTval      => NxR.csrReadData <= R.csrReg.mtval;
+            when cCsrMIp        => NxR.csrReadData <= R.csrReg.mip;
+            when cCsrPmpcfg0    => NxR.csrReadData <= R.csrReg.pmpcfg0;
+            when cCsrPmpaddr0   => NxR.csrReadData <= R.csrReg.pmpaddr0;
+            when others         => NxR.csrReadData <= (others => 'X');
+        end case;
+    end if;
+
+    case R.csrWriteMode is
+        when cModeWrite =>
+            case R.curInst(31 downto 20) is
+                when cCsrUStatus    => NxR.csrReg.ustatus   <= R.csrWriteData;
+                when cCsrUIe        => NxR.csrReg.uie       <= R.csrWriteData;
+                when cCsrUTvec      => NxR.csrReg.utvec     <= R.csrWriteData;
+                when cCsrUScratch   => NxR.csrReg.uscratch  <= R.csrWriteData;
+                when cCsrUEpc       => NxR.csrReg.uepc      <= R.csrWriteData;
+                when cCsrUCause     => NxR.csrReg.ucause    <= R.csrWriteData;
+                when cCsrUTval      => NxR.csrReg.utval     <= R.csrWriteData;
+                when cCsrUIp        => NxR.csrReg.uip       <= R.csrWriteData;
+                when cCsrMVendorId  => NxR.csrReg.mvendorid <= R.csrWriteData;
+                when cCsrMArchId    => NxR.csrReg.marchid   <= R.csrWriteData;
+                when cCsrMImpId     => NxR.csrReg.mimpid    <= R.csrWriteData;
+                when cCsrMHartId    => NxR.csrReg.mhartid   <= R.csrWriteData;
+                when cCsrMStatus    => NxR.csrReg.mstatus   <= R.csrWriteData;
+                when cCsrMIsa       => NxR.csrReg.misa      <= R.csrWriteData;
+                when cCsrMEdeleg    => NxR.csrReg.medeleg   <= R.csrWriteData;
+                when cCsrMIdeleg    => NxR.csrReg.mideleg   <= R.csrWriteData;
+                when cCsrMIe        => NxR.csrReg.mie       <= R.csrWriteData;
+                when cCsrMTvec      => NxR.csrReg.mtvec     <= R.csrWriteData;
+                when cCsrMCounteren => NxR.csrReg.mcounteren <= R.csrWriteData;
+                when cCsrMScratch   => NxR.csrReg.mscratch  <= R.csrWriteData;
+                when cCsrMEpc       => NxR.csrReg.mepc      <= R.csrWriteData;
+                when cCsrMCause     => NxR.csrReg.mcause    <= R.csrWriteData;
+                when cCsrMTval      => NxR.csrReg.mtval     <= R.csrWriteData;
+                when cCsrMIp        => NxR.csrReg.mip       <= R.csrWriteData;
+                when cCsrPmpcfg0    => NxR.csrReg.pmpcfg0   <= R.csrWriteData;
+                when cCsrPmpaddr0   => NxR.csrReg.pmpaddr0  <= R.csrWriteData;
+                when others         => null;
+            end case;
+
+        when cModeSet =>
+            case R.curInst(31 downto 20) is
+                when cCsrUStatus    => NxR.csrReg.ustatus   <= R.csrWriteData or R.csrReadData;
+                when cCsrUIe        => NxR.csrReg.uie       <= R.csrWriteData or R.csrReadData;
+                when cCsrUTvec      => NxR.csrReg.utvec     <= R.csrWriteData or R.csrReadData;
+                when cCsrUScratch   => NxR.csrReg.uscratch  <= R.csrWriteData or R.csrReadData;
+                when cCsrUEpc       => NxR.csrReg.uepc      <= R.csrWriteData or R.csrReadData;
+                when cCsrUCause     => NxR.csrReg.ucause    <= R.csrWriteData or R.csrReadData;
+                when cCsrUTval      => NxR.csrReg.utval     <= R.csrWriteData or R.csrReadData;
+                when cCsrUIp        => NxR.csrReg.uip       <= R.csrWriteData or R.csrReadData;
+                when cCsrMVendorId  => NxR.csrReg.mvendorid <= R.csrWriteData or R.csrReadData;
+                when cCsrMArchId    => NxR.csrReg.marchid   <= R.csrWriteData or R.csrReadData;
+                when cCsrMImpId     => NxR.csrReg.mimpid    <= R.csrWriteData or R.csrReadData;
+                when cCsrMHartId    => NxR.csrReg.mhartid   <= R.csrWriteData or R.csrReadData;
+                when cCsrMStatus    => NxR.csrReg.mstatus   <= R.csrWriteData or R.csrReadData;
+                when cCsrMIsa       => NxR.csrReg.misa      <= R.csrWriteData or R.csrReadData;
+                when cCsrMEdeleg    => NxR.csrReg.medeleg   <= R.csrWriteData or R.csrReadData;
+                when cCsrMIdeleg    => NxR.csrReg.mideleg   <= R.csrWriteData or R.csrReadData;
+                when cCsrMIe        => NxR.csrReg.mie       <= R.csrWriteData or R.csrReadData;
+                when cCsrMTvec      => NxR.csrReg.mtvec     <= R.csrWriteData or R.csrReadData;
+                when cCsrMCounteren => NxR.csrReg.mcounteren <= R.csrWriteData or R.csrReadData;
+                when cCsrMScratch   => NxR.csrReg.mscratch  <= R.csrWriteData or R.csrReadData;
+                when cCsrMEpc       => NxR.csrReg.mepc      <= R.csrWriteData or R.csrReadData;
+                when cCsrMCause     => NxR.csrReg.mcause    <= R.csrWriteData or R.csrReadData;
+                when cCsrMTval      => NxR.csrReg.mtval     <= R.csrWriteData or R.csrReadData;
+                when cCsrMIp        => NxR.csrReg.mip       <= R.csrWriteData or R.csrReadData;
+                when cCsrPmpcfg0    => NxR.csrReg.pmpcfg0   <= R.csrWriteData or R.csrReadData;
+                when cCsrPmpaddr0   => NxR.csrReg.pmpaddr0  <= R.csrWriteData or R.csrReadData;
+                when others         => null;
+            end case;
+
+        when cModeClear =>
+            case R.curInst(31 downto 20) is
+                when cCsrUStatus    => NxR.csrReg.ustatus   <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrUIe        => NxR.csrReg.uie       <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrUTvec      => NxR.csrReg.utvec     <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrUScratch   => NxR.csrReg.uscratch  <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrUEpc       => NxR.csrReg.uepc      <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrUCause     => NxR.csrReg.ucause    <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrUTval      => NxR.csrReg.utval     <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrUIp        => NxR.csrReg.uip       <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMVendorId  => NxR.csrReg.mvendorid <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMArchId    => NxR.csrReg.marchid   <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMImpId     => NxR.csrReg.mimpid    <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMHartId    => NxR.csrReg.mhartid   <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMStatus    => NxR.csrReg.mstatus   <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMIsa       => NxR.csrReg.misa      <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMEdeleg    => NxR.csrReg.medeleg   <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMIdeleg    => NxR.csrReg.mideleg   <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMIe        => NxR.csrReg.mie       <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMTvec      => NxR.csrReg.mtvec     <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMCounteren => NxR.csrReg.mcounteren <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMScratch   => NxR.csrReg.mscratch  <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMEpc       => NxR.csrReg.mepc      <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMCause     => NxR.csrReg.mcause    <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMTval      => NxR.csrReg.mtval     <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrMIp        => NxR.csrReg.mip       <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrPmpcfg0    => NxR.csrReg.pmpcfg0   <= (not R.csrWriteData) and R.csrReadData;
+                when cCsrPmpaddr0   => NxR.csrReg.pmpaddr0  <= (not R.csrWriteData) and R.csrReadData;
+                when others         => null;
+            end case;
+
+        when others => null;
+    end case;
+
+    -------------------------------------------------------------------------------
     -- Multiplexer
 	-------------------------------------------------------------------------------
 
@@ -430,16 +598,18 @@ begin
 
     -- Mux ALU1Src
     case vAluSrc1 is
-        when cALUSrc1RegFile =>
-            NxR.aluData1 <= vRegReadData1;
-        when cALUSrc1Zero =>
-            NxR.aluData1 <= (others => '0');
-        when cALUSrc1PC =>
-            NxR.aluData1 <= R.curPC; -- TODO: anschauen ob der richtige!
-        when others =>
-            null;
-
+        when cALUSrc1RegFile        => NxR.aluData1 <= vRegReadData1;
+        when cALUSrc1Zero           => NxR.aluData1 <= (others => '0');
+        when cALUSrc1PC             => NxR.aluData1 <= R.curPC;
+        when others                 => null;
     end case;
+
+    -- Mux CsrWriteData
+    if R.curInst(14) = cCsrDataReg then
+        NxR.csrWriteData <= vRegReadData1;
+    else
+        NxR.csrWriteData <= std_ulogic_vector(resize(unsigned(R.curInst(19 downto 15)), cBitWidth));
+    end if;
 
 end process;
 
