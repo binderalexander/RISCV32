@@ -7,6 +7,13 @@ _start:
 	lb x2, 1(x0)
 	lh x3, 1(x0)
 	lw x4, 1(x0)
+
+	addi x1, x0, 0
+	addi x1, x1, 4
+	lb x2, (x1)
+	lh x3, (x1)
+	lw x4, (x1)
+
 	j test
 
 	#store some values

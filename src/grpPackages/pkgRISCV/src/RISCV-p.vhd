@@ -41,6 +41,7 @@ constant cStatusCarryBit 	: natural := 2;
 -------------------------------------------------------------------------------
 subtype aOpCode 		is std_ulogic_vector(6 downto 0);
 subtype aFunct3			is std_ulogic_vector(2 downto 0);
+subtype aFunct12		is std_ulogic_vector(11 downto 0);
 
 constant cOpRType		: aOpCode := "0110011";
 constant cOpIArith		: aOpCode := "0010011";
@@ -82,13 +83,15 @@ constant cSysRWI		: aFunct3 := "101";
 constant cSysRSI		: aFunct3 := "110";
 constant cSysRCI		: aFunct3 := "111";
 
+-- Trap Return Funct12
+constant cMTrapRet		: aFunct12 := "001100000010";
+
 -------------------------------------------------------------------------------
 -- Control Unit
 -------------------------------------------------------------------------------
-type aControlUnitState is (Fetch, ReadReg, Calc, DataAccess, CheckJump, WriteReg, Wait0, Wait1);
+type aControlUnitState is (	Fetch, ReadReg, Calc, DataAccess, CheckJump, 
+							WriteReg, Wait0, Wait1, Trap);
 
-constant cALUSrcRegFile 	: aCtrlSignal := '0';
-constant cALUSrcImmGen  	: aCtrlSignal := '1';
 constant cMemToRegALU		: aCtrlSignal := '0';
 constant cMemToRegMem		: aCtrlSignal := '1';
 
@@ -100,6 +103,9 @@ constant cIncPC				: aCtrlSignal := '1';
 constant cALUSrc1RegFile 	: aCtrl2Signal := "00";
 constant cALUSrc1Zero		: aCtrl2Signal := "01";
 constant cALUSrc1PC			: aCtrl2Signal := "10";
+
+constant cALUSrc2RegFile 	: aCtrlSignal := '0';
+constant cALUSrc2ImmGen  	: aCtrlSignal := '1';
 
 constant cCsrDataReg		: aCtrlSignal := '0';
 constant cCsrDataImm		: aCtrlSignal := '1';
