@@ -25,25 +25,13 @@ end entity tbCore;
 
 architecture bhv of tbCore is
 
-    constant InstMemSize : natural := 2048;
+    constant InstMemSize : natural := 8192;
     type aInstMem is array (0 to InstMemSize-1) of std_logic_vector(cByte-1 downto 0);
-    signal InstMem : aInstMem := (
-        others  => (others=>'0')
-    );
+    signal InstMem : aInstMem := (others  => (others => '0'));
 
-    constant DataMemSize : natural := 1024;
+    constant DataMemSize : natural := 4096;
     type aDataMem is array (0 to DataMemSize-1) of std_logic_vector(cByte-1 downto 0);
-    signal DataMem: aDataMem := (
-        0 => x"81",
-        1 => x"02",
-        2 => x"03",
-        3 => x"04",
-        4 => x"FF",
-        5 => x"FE",
-        6 => x"FD",
-        7 => x"FC",
-        others=>(others=>'0')
-    );
+    signal DataMem : aDataMem := (others => (others => 'Z'));
 
     signal clk              : std_ulogic := '0';
     signal reset            : std_logic := '0';
@@ -95,22 +83,39 @@ ReadROM: process is
     file test_file          : text;
     variable line_num       : line;
     variable line_content   : string(1 to 64);
+    variable ram_byte       : std_logic_vector(cByte-1 downto 0);
 
     -- select test mode
     -- Single File runs the test with a single specified file
     -- FullISA runs the riscv isa tests
     type aTestMode is (SingleFile, FullISA);
-    constant testMode : aTestMode := FullISA;
+    constant testMode : aTestMode := SingleFile;
 
 begin
 
     if testMode = SingleFile then
-        file_open(char_file, "../../../../../test/checkL.bin");
+        file_open(char_file, "../../../../../test/rv32ui-p-sw.bin");
         while not endfile(char_file) and (i < InstMemSize) loop
             read(char_file, char_v);
             InstMem(i) <= std_logic_vector(to_unsigned(character'pos(char_v), cByte));
             i := i+1;
         end loop;
+
+        while not endfile(char_file) and (i < (InstMemSize + DataMemSize)) loop
+            -- write on data memory with weak logic! Can't overwrite previously written data!
+            read(char_file, char_v);
+            ram_byte := std_logic_vector(to_unsigned(character'pos(char_v), cByte));
+            for idx in 0 to cByte-1 loop
+                if ram_byte(idx) = '1' then
+                    ram_byte(idx) := 'H';
+                else
+                    ram_byte(idx) := 'L';
+                end if;
+            end loop;
+            DataMem(i-InstMemSize) <= ram_byte;
+            i := i+1;
+        end loop;
+
         report integer'image(i) & " Bytes written into ROM!";
         file_close(char_file);
 
@@ -138,11 +143,28 @@ begin
                  InstMem(i) <= std_logic_vector(to_unsigned(character'pos(char_v), cByte));
                  i := i+1;
             end loop;
+
+            while not endfile(char_file) and (i < (InstMemSize + DataMemSize)) loop
+                -- write on data memory with weak logic! Can't overwrite previously written data!
+                read(char_file, char_v);
+                ram_byte := std_logic_vector(to_unsigned(character'pos(char_v), cByte));
+                for idx in 0 to cByte-1 loop
+                    if ram_byte(idx) = '1' then
+                        ram_byte(idx) := 'H';
+                    else
+                        ram_byte(idx) := 'L';
+                    end if;
+                end loop;
+                DataMem(i-InstMemSize) <= ram_byte;
+                i := i+1;
+            end loop;
+
             file_close(char_file);
 
             -- check for finished test
             wait until test_finished = '1';
 
+            -- TODO: gp register lesen? 1 = pass, 2*test_num+1 = failed test
             if InstMem(to_integer(unsigned(instAddress)) + 4) /= x"00" then
                 report "Test produced an error: " & line_content
                 severity failure;
@@ -212,16 +234,16 @@ DataMemory: process(clk) is
 begin
 
     if falling_edge(clk) then
-        if (dataRead = '1') and (to_integer(unsigned(dataAddress))+cByteWidth-1) < DataMemSize then
+        if (dataRead = '1') and (to_integer(unsigned(dataAddress))+cByteWidth-1) < (DataMemSize + InstMemSize) then
             readDataMemory : for i in 0 to cByteWidth-1 loop
-                dataReadData(((i+1)*cByte)-1 downto i*cByte) <= DataMem(to_integer(unsigned(dataAddress))+i);
+                dataReadData(((i+1)*cByte)-1 downto i*cByte) <= DataMem(to_integer(unsigned(dataAddress))-InstMemSize+i);
             end loop;
         end if;
 
-        if (dataWrite = '1') and (to_integer(unsigned(dataAddress))+cByteWidth-1) < DataMemSize then
+        if (dataWrite = '1') and (to_integer(unsigned(dataAddress))+cByteWidth-1) < (DataMemSize + InstMemSize) then
             writeDataMemory : for i in 0 to cByteWidth-1 loop
                 if dataByteEnable(i) = '1' then
-                    DataMem(to_integer(unsigned(dataAddress))+i) <= dataWriteData(((i+1)*cByte)-1 downto i*cByte);
+                    DataMem(to_integer(unsigned(dataAddress))-InstMemSize+i) <= dataWriteData(((i+1)*cByte)-1 downto i*cByte);
                 end if;
             end loop;
         end if;

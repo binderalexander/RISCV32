@@ -386,7 +386,7 @@ begin
 				to_integer(unsigned(R.aluData2(4 downto 0)))));
 		when ALUOpSRA =>
 			vRawAluRes := std_ulogic_vector(
-				shift_right(signed('0' & R.aluData1),
+				shift_right(signed(R.aluData1(cALUWidth-1) & R.aluData1),
 				to_integer(unsigned(R.aluData2(4 downto 0)))));
 		when ALUOpNOP =>
 			vRawAluRes := (others => '0');

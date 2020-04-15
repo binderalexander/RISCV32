@@ -19,8 +19,6 @@ rv32ui-p-lui.bin
 rv32ui-p-lw.bin
 rv32ui-p-or.bin
 rv32ui-p-ori.bin
-rv32ui-p-sb.bin
-rv32ui-p-sh.bin
 rv32ui-p-sll.bin
 rv32ui-p-slli.bin
 rv32ui-p-slt.bin
@@ -32,6 +30,5 @@ rv32ui-p-srai.bin
 rv32ui-p-srl.bin
 rv32ui-p-srli.bin
 rv32ui-p-sub.bin
-rv32ui-p-sw.bin
 rv32ui-p-xor.bin
 rv32ui-p-xori.bin
