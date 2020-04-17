@@ -1,7 +1,6 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate -radix hexadecimal /tbcore/InstMem
-add wave -noupdate -radix hexadecimal /tbcore/DataMem
+add wave -noupdate -radix hexadecimal /tbcore/Memory
 add wave -noupdate /tbcore/clk
 add wave -noupdate /tbcore/reset
 add wave -noupdate -radix hexadecimal /tbcore/instAddress

@@ -2,7 +2,7 @@
 
 rm rv32tests.txt 
 
-for file in rv32*
+for file in rv32ui*
 do 
 	riscv64-unknown-elf-objcopy -O binary $file $file.bin
 	echo $file.bin >> rv32tests.txt

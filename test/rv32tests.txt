@@ -1,4 +1,3 @@
-rv32tests_small.txt.bin
 rv32ui-p-add.bin
 rv32ui-p-addi.bin
 rv32ui-p-and.bin
