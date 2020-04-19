@@ -1,0 +1,20 @@
+# do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# vsim -quiet -novopt work.tbCore 
+# Start time: 13:49:46 on Apr 19,2020
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Note: All Tests finished without errors!
+#    Time: 1074830 ns  Iteration: 1  Instance: /tbcore
+# End time: 13:50:14 on Apr 19,2020, Elapsed time: 0:00:28
+# Errors: 0, Warnings: 5, Suppressed Warnings: 8

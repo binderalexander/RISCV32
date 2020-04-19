@@ -288,9 +288,11 @@ type aRegSet is record
 	regWriteData				: aRegValue;
 
 	-- signals for ALU
+	aluCalc						: aCtrlSignal;
 	aluOp						: aALUOp;
 	aluData1					: aALUValue;
 	aluData2					: aALUValue;
+	aluRes						: aALUValue;
 
 	-- signals for CSR
 	csrReg						: aCsrSet;
@@ -316,9 +318,11 @@ constant cInitValRegSet : aRegSet := (
 	regWriteEn		=> '0',
 	regWriteData	=> (others => '0'),
 
+	aluCalc			=> '0',
 	aluOp			=> ALUOpNOP,
 	aluData1		=> (others => '0'),
 	aluData2		=> (others => '0'),
+	aluRes			=> (others => '0'),
 
 	csrReg			=> (others => (others => '0')),
 	csrRead			=> '0',

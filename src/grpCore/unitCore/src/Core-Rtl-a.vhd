@@ -54,26 +54,25 @@ begin
 	NxRegFile <= RegFile;
 
 	-- default variable values
-	if(R.ctrlState = Fetch) then
-		vRegReadData1       := (others=>'0');   -- register file read data 1
-		vRegReadData2       := (others=>'0');   -- register file read data 2
-		vRegWriteData       := (others=>'0');   -- register file write data
-		vRawAluRes          := (others=>'0');   -- alu result including overflow bit
-		vAluRes				:= (others=>'0');	-- alu result truncated
-		vAluSrc1            := (others=>'0');   -- alu input 1 mux
-		vAluSrc2            := '0';             -- alu input 2 mux
-		vImm				:= (others=>'0');	-- extended Immediate
-		vPCPlus4			:= (others=>'0');	-- current program counter plus 4
-		vNextPC				:= (others=>'0');	-- next program counter value
-		vJumpAdr			:= (others=>'0');	-- calculated jump address from instruction
-		vDataMemReadData	:= (others=>'0');	-- data memory read data
-		vDataMemByteEnable	:= (others=>'0');	-- data memory byte enable
-	end if;
+	vRegReadData1       := (others=>'0');   -- register file read data 1
+	vRegReadData2       := (others=>'0');   -- register file read data 2
+	vRegWriteData       := (others=>'0');   -- register file write data
+	vRawAluRes          := (others=>'0');   -- alu result including overflow bit
+	vAluRes				:= (others=>'0');	-- alu result truncated
+	vAluSrc1            := (others=>'0');   -- alu input 1 mux
+	vAluSrc2            := '0';             -- alu input 2 mux
+	vImm				:= (others=>'0');	-- extended Immediate
+	vPCPlus4			:= (others=>'0');	-- current program counter plus 4
+	vNextPC				:= (others=>'0');	-- next program counter value
+	vJumpAdr			:= (others=>'0');	-- calculated jump address from instruction
+	vDataMemReadData	:= (others=>'0');	-- data memory read data
+	vDataMemByteEnable	:= (others=>'0');	-- data memory byte enable
 
 	-------------------------------------------------------------------------------
 	-- Control Unit
 	-------------------------------------------------------------------------------
 	NxR.incPC           <= cNoIncPC;
+	NxR.aluCalc			<= '0';
 	NxR.memRead         <= '0';
 	NxR.memWrite        <= '0';
 	NxR.memToReg        <= cMemToRegALU;
@@ -87,6 +86,7 @@ begin
 	elsif R.ctrlState = ReadReg then
 
 		NxR.incPC     <= cIncPC;
+		NxR.aluCalc	  <= '1';
 		NxR.ctrlState <= Calc;
 		vALUSrc1      := cALUSrc1RegFile;
 
@@ -152,6 +152,7 @@ begin
 				vAluSrc2        := cALUSrc2ImmGen;
 
 			when cOpFence =>    -- implemented as NOP
+				NxR.aluCalc		<= '0';
 				NxR.ctrlState   <= Wait0;
 
 			when cOpSys =>
@@ -391,8 +392,14 @@ begin
 		when others =>
 			vRawAluRes := (others => '0');
 	end case;
-	-- Remove Carry Bit
-	vAluRes := std_ulogic_vector(resize(unsigned(vRawAluRes), cALUWidth));
+
+	-- Remove Carry Bit and Store New Value
+	if(R.aluCalc = '1') then
+		vAluRes := std_ulogic_vector(resize(unsigned(vRawAluRes), cALUWidth));
+		NxR.aluRes <= vAluRes;
+	else
+		vAluRes := R.aluRes;
+	end if;
 
 	-- Set Status Register
 	if to_integer(signed(vAluRes)) = 0 then
