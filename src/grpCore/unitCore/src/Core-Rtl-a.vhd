@@ -119,10 +119,8 @@ begin
 				-- Immediate or Register Instruction
 				if R.curInst(5) = '1' then
 					vAluSrc2 := cALUSrc2RegFile;
-				elsif R.curInst(5) = '0' then
-					vAluSrc2 := cALUSrc2ImmGen;
 				else
-					null;
+					vAluSrc2 := cALUSrc2ImmGen;
 				end if;
 
 			when cOpILoad | cOpSType =>
@@ -573,12 +571,16 @@ begin
 		when cMemUnsignedByte => 
 			vDataMemReadData := std_ulogic_vector(resize(unsigned(
 				avm_d_readdata(cByte-1 downto 0)), cBitWidth));
+			vDataMemByteEnable := cEnableByte;
 
 		when cMemUnsignedHalfWord => 
 			vDataMemReadData := std_ulogic_vector(resize(unsigned(
 				avm_d_readdata(2*cByte-1 downto 0)), cBitWidth));
+			vDataMemByteEnable := cEnableHalfWord;
 
-		when others => null;
+		when others =>
+			vDataMemReadData 	:= (others=>'0');
+			vDataMemByteEnable 	:= (others=>'0');
 	end case;
 
 	avm_d_address       <= std_logic_vector(vAluRes);
