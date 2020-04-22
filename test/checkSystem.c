@@ -22,11 +22,9 @@ int main(){
     long i = 0;
 
     while(1){
-        
         *pSwitches = *pLeds;
-    
-        // 1 Hz bei 50 MHz
-        if (i == 25000000) {
+
+        if (i == 1000000) {
             toggleLeds();
             i = 0;
         } else {
