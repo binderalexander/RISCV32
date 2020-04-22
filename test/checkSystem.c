@@ -1,7 +1,7 @@
 #include <stdbool.h>
 
-#define ADDR_LEDS   ((char *) 0x40000000)
-#define ADDR_SWITCH ((char *) 0x40000010)
+#define ADDR_LEDS   ((char *) 0x40001000)
+#define ADDR_SWITCH ((char *) 0x40000000)
 
 bool ledState = false;
 
