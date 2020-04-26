@@ -84,12 +84,12 @@ ReadROM: process is
     -- Single File runs the test with a single specified file
     -- FullISA runs the riscv isa tests
     type aTestMode is (SingleFile, FullISA);
-    constant testMode : aTestMode := FullISA;
+    constant testMode : aTestMode := SingleFile;
 
 begin
 
     if testMode = SingleFile then
-        file_open(char_file, "../../../../../test/rv32ui-p-sw.bin");
+        file_open(char_file, "../../../../../test/checkSystem.bin");
         while not endfile(char_file) and (i < MemSize) loop
             read(char_file, char_v);
             Memory(i) := std_logic_vector(to_unsigned(character'pos(char_v), cByte));
