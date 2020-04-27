@@ -1,0 +1,169 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/flw/simQuestasim
+Ecore
+Z1 w1586551255
+Z2 DPx4 work 6 global 0 22 9HUUMK23C<<i]]RGiB;ic1
+Z3 DPx4 work 5 riscv 0 22 R__Z?L]QN^^T4_OYiBbZV0
+Z4 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z5 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z6 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+R0
+8/home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-e.vhd
+F/home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-e.vhd
+l0
+L21
+V]C[85j86EhLaKJl]Rk3[U0
+!s100 iA[Fza2SGdkDN5jm;^>Dz2
+Z7 OV;C;10.5b;63
+31
+Z8 !s110 1588014707
+!i10b 1
+Z9 !s108 1588014707.000000
+!s90 -reportprogress|300|-quiet|-93|-work|work|/home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-e.vhd|
+!s107 /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-e.vhd|
+!i113 1
+Z10 o-quiet -93 -work work
+Z11 tExplicit 1 CvgOpt 0
+Artl
+w1587296975
+R2
+R3
+R4
+R5
+R6
+Z12 DEx4 work 4 core 0 22 ]C[85j86EhLaKJl]Rk3[U0
+8/home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd
+F/home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd
+l22
+L13
+Vb5AM?DE?[^dnXM?<f7MRJ3
+!s100 >eMokl8XFRRciHB?^j_9=2
+R7
+31
+R8
+!i10b 1
+R9
+!s90 -reportprogress|300|-quiet|-93|-work|work|/home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd|
+!s107 /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/Core-Rtl-a.vhd|
+!i113 1
+R10
+R11
+Pglobal
+R4
+R5
+R6
+R1
+R0
+Z13 8/home/binder/Bachelorarbeit/RISCV32/src/grpPackages/pkgGlobal/src/Global-p.vhd
+Z14 F/home/binder/Bachelorarbeit/RISCV32/src/grpPackages/pkgGlobal/src/Global-p.vhd
+l0
+L13
+V9HUUMK23C<<i]]RGiB;ic1
+!s100 Rb;?U3mR:dDPH=C60^zJ63
+R7
+31
+b1
+R8
+!i10b 1
+R9
+Z15 !s90 -reportprogress|300|-quiet|-93|-work|work|/home/binder/Bachelorarbeit/RISCV32/src/grpPackages/pkgGlobal/src/Global-p.vhd|
+Z16 !s107 /home/binder/Bachelorarbeit/RISCV32/src/grpPackages/pkgGlobal/src/Global-p.vhd|
+!i113 1
+R10
+R11
+Bbody
+R2
+R4
+R5
+R6
+l0
+L50
+V2=0f8Q6^CHl^f2O1e8gAb2
+!s100 D8?VV=;CIFUbH@D@nIanM2
+R7
+31
+R8
+!i10b 1
+R9
+R15
+R16
+!i113 1
+R10
+R11
+Priscv
+R4
+R2
+R5
+R6
+w1587295613
+R0
+8/home/binder/Bachelorarbeit/RISCV32/src/grpPackages/pkgRISCV/src/RISCV-p.vhd
+F/home/binder/Bachelorarbeit/RISCV32/src/grpPackages/pkgRISCV/src/RISCV-p.vhd
+l0
+L19
+VR__Z?L]QN^^T4_OYiBbZV0
+!s100 z^DEBIb23l_61i3GTdaKf1
+R7
+31
+R8
+!i10b 1
+R9
+!s90 -reportprogress|300|-quiet|-93|-work|work|/home/binder/Bachelorarbeit/RISCV32/src/grpPackages/pkgRISCV/src/RISCV-p.vhd|
+!s107 /home/binder/Bachelorarbeit/RISCV32/src/grpPackages/pkgRISCV/src/RISCV-p.vhd|
+!i113 1
+R10
+R11
+Etbcore
+Z17 w1587925447
+R2
+R3
+R4
+R5
+R6
+R0
+Z18 8/home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/tbCore-Bhv-ea.vhd
+Z19 F/home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/tbCore-Bhv-ea.vhd
+l0
+L23
+VER0e5NZdEA<`T0XC5i>V21
+!s100 m72HELPENeLS=3z[VX[@D0
+R7
+31
+R8
+!i10b 1
+R9
+Z20 !s90 -reportprogress|300|-quiet|-93|-work|work|/home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/tbCore-Bhv-ea.vhd|
+Z21 !s107 /home/binder/Bachelorarbeit/RISCV32/src/grpCore/unitCore/src/tbCore-Bhv-ea.vhd|
+!i113 1
+R10
+R11
+Abhv
+R12
+R2
+R3
+R4
+R5
+R6
+DEx4 work 6 tbcore 0 22 ER0e5NZdEA<`T0XC5i>V21
+l50
+L26
+VW7?N];f4lEW00LlW11M4N0
+!s100 bJB1<d2:ABW9]2deiXRG40
+R7
+31
+R8
+!i10b 1
+R9
+R20
+R21
+!i113 1
+R10
+R11

@@ -1,0 +1,20 @@
+# do ../../../../fhlow/simQuestasim/CompSim.do
+# .
+# ../../../..
+# ../../../../fhlow/simQuestasim
+# vsim -quiet -novopt work.tbCore 
+# Start time: 21:11:47 on Apr 27,2020
+# ** Note: 4884 Bytes written into ROM!
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 0 ps  Iteration: 0  Instance: /tbcore/UUT
+# End time: 21:14:01 on Apr 27,2020, Elapsed time: 0:02:14
+# Errors: 0, Warnings: 5, Suppressed Warnings: 8

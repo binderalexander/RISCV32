@@ -22,7 +22,7 @@ int main(){
     long i = 0;
 
     while(1){
-        *pSwitches = *pLeds;
+        *pLeds = *pSwitches;
 
         if (i == 1000000) {
             toggleLeds();
