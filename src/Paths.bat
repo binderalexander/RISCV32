@@ -39,8 +39,8 @@ rem ****************************************************************************
 
 rem *******************************************************************************
 rem * Quartus
-set MY_QUARTUS_PATH=C:\intelFPGA\18.1\quartus
-set MY_QUARTUS_EXECUTABLE_MAIN=C:\intelFPGA\18.1\quartus\bin64
+set MY_QUARTUS_PATH=C:\intelFPGA_lite\18.1\quartus
+set MY_QUARTUS_EXECUTABLE_MAIN=C:\intelFPGA_lite\18.1\quartus\bin64
 set MY_QUARTUS_EXECUTABLE_SHELL=
 rem *******************************************************************************
 

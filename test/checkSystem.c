@@ -1,37 +1,23 @@
-#include <stdbool.h>
+#include <stdint.h>
 
-#define ADDR_LEDS   ((char *) 0x40001000)
-#define ADDR_SWITCH ((char *) 0x40000000)
+#define ADDR_LEDS   ((char *) 0x8000)
 
-bool ledState = false;
+void runningLeds(){
+    static uint8_t cnt = 0;
 
-void toggleLeds(){
-
-    if(ledState){
-        *(ADDR_LEDS + 1) = 0x2;
-    } else {
-        *(ADDR_LEDS + 1) = 0x1;
-    }
-
-    ledState = !ledState;
+	*ADDR_LEDS = cnt++;
 }
 
 int main(){
-    char *pLeds      = ADDR_LEDS;
-    char *pSwitches  = ADDR_SWITCH;
     long i = 0;
 
     while(1){
-        *pLeds = *pSwitches;
-
-        if (i == 1000000) {
-            toggleLeds();
+        if (i == 10000) {
+            runningLeds();
             i = 0;
         } else {
             i++;
         }
-
     }
-
     return 0;
 }

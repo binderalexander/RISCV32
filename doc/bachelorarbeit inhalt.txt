@@ -16,5 +16,5 @@ Design Verbessern durch Functions und Procedures für mehrfach vorhandene Elemen
 Evtl. Erweiterung zu Pipelining möglich? FSMD design dafür geeignet?
 
 
+Datenbus Byte ordering untersuchen!
 
--> Synthese Testen ob Comb keine Register erzeugt - Records auf ports nach aussen hängen

@@ -60,13 +60,15 @@ UUT: entity work.Core(rtl)
         avm_i_address       => instAddress,
         avm_i_read          => instRead,
         avm_i_readdata      => instReadData,
+        avm_i_waitrequest   => '0',
 
         avm_d_address       => dataAddress,
         avm_d_byteenable    => dataByteEnable,
         avm_d_write         => dataWrite,
         avm_d_writedata     => dataWriteData,
         avm_d_read          => dataRead,
-        avm_d_readdata      => dataReadData
+        avm_d_readdata      => dataReadData,
+        avm_d_waitrequest   => '0'
     );
 
 ReadROM: process is
@@ -84,12 +86,12 @@ ReadROM: process is
     -- Single File runs the test with a single specified file
     -- FullISA runs the riscv isa tests
     type aTestMode is (SingleFile, FullISA);
-    constant testMode : aTestMode := SingleFile;
+    constant testMode : aTestMode := FullISA;
 
 begin
 
     if testMode = SingleFile then
-        file_open(char_file, "../../../../../test/checkSystem.bin");
+        file_open(char_file, "../../../../../test/rv32ui-p-sh.bin");
         while not endfile(char_file) and (i < MemSize) loop
             read(char_file, char_v);
             Memory(i) := std_logic_vector(to_unsigned(character'pos(char_v), cByte));
@@ -188,7 +190,7 @@ begin
     if rising_edge(clk) then
         if (instRead = '1') and (to_integer(unsigned(instAddress))+cByteWidth-1) < MemSize then
             readInstructionMemory : for i in 0 to cByteWidth-1 loop
-                instReadData(((i+1)*cByte)-1 downto i*cByte) <= Memory(to_integer(unsigned(instAddress))+i);
+                instReadData(((4-i)*cByte)-1 downto (3-i)*cByte) <= Memory(to_integer(unsigned(instAddress))+i);
             end loop;
         end if;
     end if;
@@ -197,19 +199,25 @@ end process InstructionMemory;
 DataMemory: process(clk) is
 begin
 
-    if falling_edge(clk) then
+    if rising_edge(clk) then
         if (dataRead = '1') and (to_integer(unsigned(dataAddress))+cByteWidth-1) < MemSize then
             readDataMemory : for i in 0 to cByteWidth-1 loop
-                dataReadData(((i+1)*cByte)-1 downto i*cByte) <= Memory(to_integer(unsigned(dataAddress))+i);
+                dataReadData(((4-i)*cByte)-1 downto (3-i)*cByte) <= Memory(to_integer(unsigned(dataAddress))+i);
             end loop;
         end if;
 
         if (dataWrite = '1') and (to_integer(unsigned(dataAddress))+cByteWidth-1) < MemSize then
-            writeDataMemory : for i in 0 to cByteWidth-1 loop
-                if dataByteEnable(i) = '1' then
-                    Memory(to_integer(unsigned(dataAddress))+i) := dataWriteData(((i+1)*cByte)-1 downto i*cByte);
-                end if;
-            end loop;
+            if dataByteEnable = "1111" then
+                writeWord : for i in 0 to 3 loop
+                        Memory(to_integer(unsigned(dataAddress))+i) := dataWriteData(((4-i)*cByte)-1 downto (3-i)*cByte);
+                end loop;
+            elsif dataByteEnable = "0011" then
+                writeHalfword: for i in 0 to 1 loop
+                    Memory(to_integer(unsigned(dataAddress))+i) := dataWriteData(((2-i)*cByte)-1 downto (1-i)*cByte);
+                end loop;
+            elsif dataByteEnable = "0001" then
+                Memory(to_integer(unsigned(dataAddress))) := dataWriteData(cByte-1 downto 0);
+            end if;      
         end if;
     end if;
 end process DataMemory;

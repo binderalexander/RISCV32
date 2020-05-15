@@ -18,4 +18,10 @@ library work;
 use work.RISCV.all;
 
 entity TbdCore is
+	port (
+		CLOCK_50			: in  std_logic;
+		KEY_0				: in  std_logic;
+		SW					: in  std_logic_vector(9 downto 0);
+		LEDR				: out std_logic_vector(9 downto 0)	
+	);
 end entity TbdCore;

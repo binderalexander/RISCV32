@@ -1,0 +1,28 @@
+00000000: 1301 0000 3725 0000 3301 a100 1305 0000  ....7%..3.......
+00000010: 3786 0000 b705 1000 1305 1500 6354 b500  7...........cT..
+00000020: 6ff0 9fff 1305 0000 9386 1600 2300 d600  o...........#...
+00000030: 6ff0 9ffe                                o...
+
+checkMinimalSystemFull.o:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00000113          	li	sp,0
+   4:	00002537          	lui	a0,0x2
+   8:	00a10133          	add	sp,sp,a0
+   c:	00000513          	li	a0,0
+  10:	00008637          	lui	a2,0x8
+  14:	001005b7          	lui	a1,0x100
+
+00000018 <loop>:
+  18:	00150513          	addi	a0,a0,1 # 2001 <blink+0x1fdd>
+  1c:	00b55463          	bge	a0,a1,24 <blink>
+  20:	ff9ff06f          	j	18 <loop>
+
+00000024 <blink>:
+  24:	00000513          	li	a0,0
+  28:	00168693          	addi	a3,a3,1
+  2c:	00d60023          	sb	a3,0(a2) # 8000 <PERIPH_OUT>
+  30:	fe9ff06f          	j	18 <loop>

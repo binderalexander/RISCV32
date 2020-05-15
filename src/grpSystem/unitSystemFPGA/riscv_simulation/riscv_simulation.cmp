@@ -1,0 +1,6 @@
+	component riscv_simulation is
+		port (
+			leds_export : out std_logic_vector(7 downto 0)   -- export
+		);
+	end component riscv_simulation;
+

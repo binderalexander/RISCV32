@@ -162,6 +162,7 @@ append BhvUnits {
 #* 
 #*******************************************************************************
 append ForeignUnits {
+	Core Core flw/synlayQuartus/synlayResults/riscv_system/synthesis/riscv_system.qip 0 QIP
 }
 
 

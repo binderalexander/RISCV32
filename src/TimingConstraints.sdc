@@ -20,7 +20,7 @@
 #*******************************************************************************
 
 # Clock constraints
-create_clock -name "SYSCLK" -period 20ns [get_ports {iClk}] -waveform {0.000ns 10.000ns}
+create_clock -name "CLOCK_50" -period 5.000 [get_ports {CLOCK_50}] 
 
 # HPS inputs
 #create_clock -name "HPS_I2C1_SCLK" -period 2500ns [get_ports {HPS_I2C1_SCLK}] -waveform {0.000ns 1250.000ns}
@@ -45,4 +45,4 @@ derive_clock_uncertainty
 
 
 # Synchronizer inputs are asynchronous
-set_false_path -to [get_keepers -no_case {Sync:*|Metastable[0]}]
+#set_false_path -to [get_keepers -no_case {Sync:*|Metastable[0]}]

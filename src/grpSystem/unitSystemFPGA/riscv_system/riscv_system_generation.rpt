@@ -1,0 +1,175 @@
+Info: Starting: Create simulation model
+Info: qsys-generate X:\src\grpSystem\unitSystemFPGA\riscv_system.qsys --simulation=VHDL --allow-mixed-language-simulation --output-directory=X:\src\grpSystem\unitSystemFPGA\riscv_system\simulation --family="Cyclone V" --part=5CSEMA5F31C6
+Progress: Loading unitSystemFPGA/riscv_system.qsys
+Progress: Reading input file
+Progress: Adding clk_0 [clock_source 18.1]
+Progress: Parameterizing module clk_0
+Progress: Adding leds [altera_avalon_pio 18.1]
+Progress: Parameterizing module leds
+Progress: Adding onchip_memory2_0 [altera_avalon_onchip_memory2 18.1]
+Progress: Parameterizing module onchip_memory2_0
+Progress: Adding rv32ui_fsmd_0 [rv32ui_fsmd 1.0]
+Progress: Parameterizing module rv32ui_fsmd_0
+Progress: Adding switches [altera_avalon_pio 18.1]
+Progress: Parameterizing module switches
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: riscv_system.switches: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: riscv_system: Generating riscv_system "riscv_system" for SIM_VHDL
+Info: Interconnect is inserted between master rv32ui_fsmd_0.instruction and slave onchip_memory2_0.s1 because the master has address signal 32 bit wide, but the slave is 13 bit wide.
+Info: Interconnect is inserted between master rv32ui_fsmd_0.instruction and slave onchip_memory2_0.s1 because the master has read signal 1 bit wide, but the slave is 0 bit wide.
+Info: Interconnect is inserted between master rv32ui_fsmd_0.instruction and slave onchip_memory2_0.s1 because the master has waitrequest signal 1 bit wide, but the slave is 0 bit wide.
+Info: leds: Starting RTL generation for module 'riscv_system_leds'
+Info: leds:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=riscv_system_leds --dir=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0003_leds_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --vhdl --config=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0003_leds_gen//riscv_system_leds_component_configuration.pl  --do_build_sim=1    --sim_dir=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0003_leds_gen/  ]
+Info: leds: Done RTL generation for module 'riscv_system_leds'
+Info: leds: "riscv_system" instantiated altera_avalon_pio "leds"
+Info: onchip_memory2_0: Starting RTL generation for module 'riscv_system_onchip_memory2_0'
+Info: onchip_memory2_0:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=riscv_system_onchip_memory2_0 --dir=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0004_onchip_memory2_0_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --vhdl --config=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0004_onchip_memory2_0_gen//riscv_system_onchip_memory2_0_component_configuration.pl  --do_build_sim=1    --sim_dir=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0004_onchip_memory2_0_gen/  ]
+Info: onchip_memory2_0: Done RTL generation for module 'riscv_system_onchip_memory2_0'
+Info: onchip_memory2_0: "riscv_system" instantiated altera_avalon_onchip_memory2 "onchip_memory2_0"
+Info: rv32ui_fsmd_0: "riscv_system" instantiated rv32ui_fsmd "rv32ui_fsmd_0"
+Info: switches: Starting RTL generation for module 'riscv_system_switches'
+Info: switches:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=riscv_system_switches --dir=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0006_switches_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --vhdl --config=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0006_switches_gen//riscv_system_switches_component_configuration.pl  --do_build_sim=1    --sim_dir=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0006_switches_gen/  ]
+Info: switches: Done RTL generation for module 'riscv_system_switches'
+Info: switches: "riscv_system" instantiated altera_avalon_pio "switches"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_0: "riscv_system" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_1: "riscv_system" instantiated altera_mm_interconnect "mm_interconnect_1"
+Info: rst_controller: "riscv_system" instantiated altera_reset_controller "rst_controller"
+Info: rv32ui_fsmd_0_data_translator: "mm_interconnect_0" instantiated altera_merlin_master_translator "rv32ui_fsmd_0_data_translator"
+Info: leds_s1_translator: "mm_interconnect_0" instantiated altera_merlin_slave_translator "leds_s1_translator"
+Info: rv32ui_fsmd_0_data_agent: "mm_interconnect_0" instantiated altera_merlin_master_agent "rv32ui_fsmd_0_data_agent"
+Info: leds_s1_agent: "mm_interconnect_0" instantiated altera_merlin_slave_agent "leds_s1_agent"
+Info: leds_s1_agent_rsp_fifo: "mm_interconnect_0" instantiated altera_avalon_sc_fifo "leds_s1_agent_rsp_fifo"
+Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_0" instantiated altera_merlin_router "router_001"
+Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file X:/src/grpSystem/unitSystemFPGA/riscv_system/simulation/submodules/altera_merlin_arbitrator.sv
+Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
+Info: router: "mm_interconnect_1" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_1" instantiated altera_merlin_router "router_001"
+Info: cmd_demux: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file X:/src/grpSystem/unitSystemFPGA/riscv_system/simulation/submodules/altera_merlin_arbitrator.sv
+Info: rsp_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file X:/src/grpSystem/unitSystemFPGA/riscv_system/simulation/submodules/altera_merlin_arbitrator.sv
+Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
+Info: riscv_system: Done "riscv_system" with 26 modules, 33 files
+Info: qsys-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd=X:\src\grpSystem\unitSystemFPGA\riscv_system\riscv_system.spd --output-directory=X:/src/grpSystem/unitSystemFPGA/riscv_system/simulation/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=X:\src\grpSystem\unitSystemFPGA\riscv_system\riscv_system.spd --output-directory=X:/src/grpSystem/unitSystemFPGA/riscv_system/simulation/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in X:/src/grpSystem/unitSystemFPGA/riscv_system/simulation/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Skipping VCS script generation since VHDL file $QUARTUS_INSTALL_DIR/eda/sim_lib/altera_syn_attributes.vhd is required for simulation
+Info: Generating the following file(s) for VCSMX simulator in X:/src/grpSystem/unitSystemFPGA/riscv_system/simulation/ directory:
+Info: 	synopsys/vcsmx/synopsys_sim.setup
+Info: 	synopsys/vcsmx/vcsmx_setup.sh
+Info: Generating the following file(s) for NCSIM simulator in X:/src/grpSystem/unitSystemFPGA/riscv_system/simulation/ directory:
+Info: 	cadence/cds.lib
+Info: 	cadence/hdl.var
+Info: 	cadence/ncsim_setup.sh
+Info: 	20 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in X:/src/grpSystem/unitSystemFPGA/riscv_system/simulation/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under X:/src/grpSystem/unitSystemFPGA/riscv_system/simulation/.
+Info: Regenerate these scripts whenever you make any change to any Quartus-generated IP in your project.
+Info: Finished: Create Modelsim Project.
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate X:\src\grpSystem\unitSystemFPGA\riscv_system.qsys --block-symbol-file --output-directory=X:\src\grpSystem\unitSystemFPGA\riscv_system --family="Cyclone V" --part=5CSEMA5F31C6
+Progress: Loading unitSystemFPGA/riscv_system.qsys
+Progress: Reading input file
+Progress: Adding clk_0 [clock_source 18.1]
+Progress: Parameterizing module clk_0
+Progress: Adding leds [altera_avalon_pio 18.1]
+Progress: Parameterizing module leds
+Progress: Adding onchip_memory2_0 [altera_avalon_onchip_memory2 18.1]
+Progress: Parameterizing module onchip_memory2_0
+Progress: Adding rv32ui_fsmd_0 [rv32ui_fsmd 1.0]
+Progress: Parameterizing module rv32ui_fsmd_0
+Progress: Adding switches [altera_avalon_pio 18.1]
+Progress: Parameterizing module switches
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: riscv_system.switches: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: qsys-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate X:\src\grpSystem\unitSystemFPGA\riscv_system.qsys --synthesis=VHDL --output-directory=X:\src\grpSystem\unitSystemFPGA\riscv_system\synthesis --family="Cyclone V" --part=5CSEMA5F31C6
+Progress: Loading unitSystemFPGA/riscv_system.qsys
+Progress: Reading input file
+Progress: Adding clk_0 [clock_source 18.1]
+Progress: Parameterizing module clk_0
+Progress: Adding leds [altera_avalon_pio 18.1]
+Progress: Parameterizing module leds
+Progress: Adding onchip_memory2_0 [altera_avalon_onchip_memory2 18.1]
+Progress: Parameterizing module onchip_memory2_0
+Progress: Adding rv32ui_fsmd_0 [rv32ui_fsmd 1.0]
+Progress: Parameterizing module rv32ui_fsmd_0
+Progress: Adding switches [altera_avalon_pio 18.1]
+Progress: Parameterizing module switches
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: riscv_system.switches: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
+Info: riscv_system: Generating riscv_system "riscv_system" for QUARTUS_SYNTH
+Info: Interconnect is inserted between master rv32ui_fsmd_0.instruction and slave onchip_memory2_0.s1 because the master has address signal 32 bit wide, but the slave is 13 bit wide.
+Info: Interconnect is inserted between master rv32ui_fsmd_0.instruction and slave onchip_memory2_0.s1 because the master has read signal 1 bit wide, but the slave is 0 bit wide.
+Info: Interconnect is inserted between master rv32ui_fsmd_0.instruction and slave onchip_memory2_0.s1 because the master has waitrequest signal 1 bit wide, but the slave is 0 bit wide.
+Info: leds: Starting RTL generation for module 'riscv_system_leds'
+Info: leds:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=riscv_system_leds --dir=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0026_leds_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0026_leds_gen//riscv_system_leds_component_configuration.pl  --do_build_sim=0  ]
+Info: leds: Done RTL generation for module 'riscv_system_leds'
+Info: leds: "riscv_system" instantiated altera_avalon_pio "leds"
+Info: onchip_memory2_0: Starting RTL generation for module 'riscv_system_onchip_memory2_0'
+Info: onchip_memory2_0:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=riscv_system_onchip_memory2_0 --dir=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0027_onchip_memory2_0_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0027_onchip_memory2_0_gen//riscv_system_onchip_memory2_0_component_configuration.pl  --do_build_sim=0  ]
+Info: onchip_memory2_0: Done RTL generation for module 'riscv_system_onchip_memory2_0'
+Info: onchip_memory2_0: "riscv_system" instantiated altera_avalon_onchip_memory2 "onchip_memory2_0"
+Info: rv32ui_fsmd_0: "riscv_system" instantiated rv32ui_fsmd "rv32ui_fsmd_0"
+Info: switches: Starting RTL generation for module 'riscv_system_switches'
+Info: switches:   Generation command is [exec C:/intelfpga_lite/18.1/quartus/bin64/perl/bin/perl.exe -I C:/intelfpga_lite/18.1/quartus/bin64/perl/lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/europa -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin/perl_lib -I C:/intelfpga_lite/18.1/quartus/sopc_builder/bin -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/common -I C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/intelfpga_lite/18.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=riscv_system_switches --dir=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0029_switches_gen/ --quartus_dir=C:/intelfpga_lite/18.1/quartus --verilog --config=C:/Users/19bin/AppData/Local/Temp/alt8397_202624578550215010.dir/0029_switches_gen//riscv_system_switches_component_configuration.pl  --do_build_sim=0  ]
+Info: switches: Done RTL generation for module 'riscv_system_switches'
+Info: switches: "riscv_system" instantiated altera_avalon_pio "switches"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_0: "riscv_system" instantiated altera_mm_interconnect "mm_interconnect_0"
+Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
+Info: mm_interconnect_1: "riscv_system" instantiated altera_mm_interconnect "mm_interconnect_1"
+Info: rst_controller: "riscv_system" instantiated altera_reset_controller "rst_controller"
+Info: rv32ui_fsmd_0_data_translator: "mm_interconnect_0" instantiated altera_merlin_master_translator "rv32ui_fsmd_0_data_translator"
+Info: leds_s1_translator: "mm_interconnect_0" instantiated altera_merlin_slave_translator "leds_s1_translator"
+Info: rv32ui_fsmd_0_data_agent: "mm_interconnect_0" instantiated altera_merlin_master_agent "rv32ui_fsmd_0_data_agent"
+Info: leds_s1_agent: "mm_interconnect_0" instantiated altera_merlin_slave_agent "leds_s1_agent"
+Info: leds_s1_agent_rsp_fifo: "mm_interconnect_0" instantiated altera_avalon_sc_fifo "leds_s1_agent_rsp_fifo"
+Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_0" instantiated altera_merlin_router "router_001"
+Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
+Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file X:/src/grpSystem/unitSystemFPGA/riscv_system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
+Info: router: "mm_interconnect_1" instantiated altera_merlin_router "router"
+Info: router_001: "mm_interconnect_1" instantiated altera_merlin_router "router_001"
+Info: cmd_demux: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "cmd_demux"
+Info: cmd_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "cmd_mux"
+Info: Reusing file X:/src/grpSystem/unitSystemFPGA/riscv_system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "rsp_mux"
+Info: Reusing file X:/src/grpSystem/unitSystemFPGA/riscv_system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
+Info: riscv_system: Done "riscv_system" with 26 modules, 33 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

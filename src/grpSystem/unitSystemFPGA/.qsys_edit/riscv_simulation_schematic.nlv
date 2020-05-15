@@ -1,0 +1,15 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst riscv_simulation.reset_source_0 -pg 1 -lvl 2 -y 90
+preplace inst riscv_simulation.onchip_memory2_0 -pg 1 -lvl 4 -y 130
+preplace inst riscv_simulation.rv32ui_fsmd_0 -pg 1 -lvl 3 -y 90
+preplace inst riscv_simulation.pio_0 -pg 1 -lvl 4 -y 30
+preplace inst riscv_simulation.clock_source_0 -pg 1 -lvl 1 -y 70
+preplace inst riscv_simulation -pg 1 -lvl 1 -y 40 -regy -20
+preplace netloc EXPORT<net_container>riscv_simulation</net_container>(SLAVE)pio_0.external_connection,(SLAVE)riscv_simulation.leds) 1 0 4 NJ 60 NJ 60 NJ 60 NJ
+preplace netloc FAN_OUT<net_container>riscv_simulation</net_container>(SLAVE)pio_0.s1,(MASTER)rv32ui_fsmd_0.data,(SLAVE)onchip_memory2_0.s2) 1 3 1 610
+preplace netloc POINT_TO_POINT<net_container>riscv_simulation</net_container>(MASTER)rv32ui_fsmd_0.instruction,(SLAVE)onchip_memory2_0.s1) 1 3 1 590
+preplace netloc FAN_OUT<net_container>riscv_simulation</net_container>(MASTER)clock_source_0.clk,(SLAVE)onchip_memory2_0.clk1,(SLAVE)pio_0.clk,(SLAVE)reset_source_0.clk,(SLAVE)rv32ui_fsmd_0.clock) 1 1 3 190 80 360 160 550
+preplace netloc FAN_OUT<net_container>riscv_simulation</net_container>(SLAVE)onchip_memory2_0.reset1,(MASTER)reset_source_0.reset,(SLAVE)pio_0.reset,(SLAVE)rv32ui_fsmd_0.reset_n) 1 2 2 340 180 570
+levelinfo -pg 1 0 40 820
+levelinfo -hier riscv_simulation 50 90 230 390 660 810

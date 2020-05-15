@@ -1,0 +1,40 @@
+
+WORK > DEFAULT
+DEFAULT:                       ./libraries/work/                         
+work:                          ./libraries/work/                         
+error_adapter_0:               ./libraries/error_adapter_0/              
+rsp_mux:                       ./libraries/rsp_mux/                      
+cmd_mux:                       ./libraries/cmd_mux/                      
+cmd_demux:                     ./libraries/cmd_demux/                    
+router_001:                    ./libraries/router_001/                   
+router:                        ./libraries/router/                       
+avalon_st_adapter:             ./libraries/avalon_st_adapter/            
+rsp_demux:                     ./libraries/rsp_demux/                    
+pio_0_s1_agent_rsp_fifo:       ./libraries/pio_0_s1_agent_rsp_fifo/      
+pio_0_s1_agent:                ./libraries/pio_0_s1_agent/               
+rv32ui_fsmd_0_data_agent:      ./libraries/rv32ui_fsmd_0_data_agent/     
+pio_0_s1_translator:           ./libraries/pio_0_s1_translator/          
+rv32ui_fsmd_0_data_translator: ./libraries/rv32ui_fsmd_0_data_translator/
+rst_controller:                ./libraries/rst_controller/               
+mm_interconnect_1:             ./libraries/mm_interconnect_1/            
+mm_interconnect_0:             ./libraries/mm_interconnect_0/            
+rv32ui_fsmd_0:                 ./libraries/rv32ui_fsmd_0/                
+reset_source_0:                ./libraries/reset_source_0/               
+pio_0:                         ./libraries/pio_0/                        
+onchip_memory2_0:              ./libraries/onchip_memory2_0/             
+clock_source_0:                ./libraries/clock_source_0/               
+altera_ver:                    ./libraries/altera_ver/                   
+lpm_ver:                       ./libraries/lpm_ver/                      
+sgate_ver:                     ./libraries/sgate_ver/                    
+altera_mf_ver:                 ./libraries/altera_mf_ver/                
+altera_lnsim_ver:              ./libraries/altera_lnsim_ver/             
+cyclonev_ver:                  ./libraries/cyclonev_ver/                 
+cyclonev_hssi_ver:             ./libraries/cyclonev_hssi_ver/            
+cyclonev_pcie_hip_ver:         ./libraries/cyclonev_pcie_hip_ver/        
+altera:                        ./libraries/altera/                       
+lpm:                           ./libraries/lpm/                          
+sgate:                         ./libraries/sgate/                        
+altera_mf:                     ./libraries/altera_mf/                    
+altera_lnsim:                  ./libraries/altera_lnsim/                 
+cyclonev:                      ./libraries/cyclonev/                     
+LIBRARY_SCAN = TRUE
