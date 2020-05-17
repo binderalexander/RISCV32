@@ -23,11 +23,10 @@ architecture rtl of Core is
 	signal i_readdata_remapped 		: std_logic_vector(cBitWidth-1 downto 0);
 	signal d_readdata_remapped 		: std_logic_vector(cBitWidth-1 downto 0);
 	signal d_writedata_remapped		: std_logic_vector(cBitWidth-1 downto 0);
-	-- signal d_byteenable_remapped 	: std_logic_vector((cBitWidth/cByte)-1 downto 0);
 
 begin
 
--- remap bus signals to little endian
+-- remap bus signals to internal representation
 -- instruction bus
 i_readdata_remapped(31 downto 24)      <= avm_i_readdata( 7 downto  0);
 i_readdata_remapped(23 downto 16)      <= avm_i_readdata(15 downto  8);
@@ -43,10 +42,6 @@ avm_d_writedata(31 downto 24)		<= d_writedata_remapped( 7 downto  0);
 avm_d_writedata(23 downto 16)		<= d_writedata_remapped(15 downto  8);
 avm_d_writedata(15 downto  8)		<= d_writedata_remapped(23 downto 16);
 avm_d_writedata( 7 downto  0)		<= d_writedata_remapped(31 downto 24);	
--- avm_d_byteenable(3)					<= d_byteenable_remapped(0);
--- avm_d_byteenable(2)					<= d_byteenable_remapped(1);
--- avm_d_byteenable(1)					<= d_byteenable_remapped(2);
--- avm_d_byteenable(0)					<= d_byteenable_remapped(3);
 
 Registers: process (csi_clk, rsi_reset_n)
 begin
@@ -94,7 +89,7 @@ begin
 	vNextPC				:= (others=>'0');	-- next program counter value
 	vJumpAdr			:= (others=>'0');	-- calculated jump address from instruction
 	vDataMemReadData	:= (others=>'0');	-- data memory read data
-	vDataMemWriteData	:= (others=>'0');
+	vDataMemWriteData	:= (others=>'0');	-- data memory write data
 	vDataMemByteEnable	:= (others=>'0');	-- data memory byte enable
 
 	-------------------------------------------------------------------------------
@@ -254,7 +249,7 @@ begin
 				NxR.incPC     <= cIncPC;
 				NxR.ctrlState <= DataAccess0;
 			when others =>
-				null; -- not implemented yet
+				null;
 
 		end case;
 
@@ -262,10 +257,8 @@ begin
 		case R.curInst(6 downto 0) is
 			when cOpILoad =>
 				NxR.memToReg    <= cMemToRegMem;
-				--NxR.memRead		<= '1';
 				NxR.ctrlState   <= DataAccess1;
 			when cOpSType =>
-				--NxR.memWrite	<= '1';
 				NxR.ctrlState   <= Wait1;
 			when cOpSys =>
 				NxR.regWriteEn  <= R.csrRead;
@@ -364,26 +357,20 @@ begin
 	-- Immediate Extension
 	-------------------------------------------------------------------------------
 	case R.curInst(6 downto 0) is
-		-- R-Type
-		when "0110011" =>
+		when cOpRType =>
 			vImm := (others => '0');
-		-- I-Type
-		when  "1100111" | "0000011" | "0010011" =>
+		when  cOpIJumpReg | cOpILoad | cOpIArith =>
 			vImm(10 downto 0) := R.curInst(30 downto 20);
 			vImm(cImmLen - 1 downto 11) := (others => R.curInst(31));
-		-- S-Type
-		when "0100011" =>
+		when cOpSType =>
 			vImm(10 downto 0) := R.curInst(30 downto 25) & R.curInst(11 downto 7);
 			vImm(cImmLen - 1 downto 11) := (others => R.curInst(31));
-		-- B-Type
-		when "1100011" =>
+		when cOpBType =>
 			vImm(cImmLen - 1 downto 12) := (others => R.curInst(31));
 			vImm(11 downto 0) := R.curInst(7) & R.curInst(30 downto 25) & R.curInst(11 downto 8) & '0';
-		-- U-Type
-		when "0110111" | "0010111" =>
+		when cOpLUI | cOpAUIPC =>
 			vImm := R.curInst(31 downto 12) & "000000000000";
-		-- J-Type
-		when "1101111" =>
+		when cOpJType =>
 			vImm(cImmLen - 1 downto 20) := (others => R.curInst(31));
 			vImm(19 downto 0) := R.curInst(19 downto 12) & R.curInst(20) & R.curInst(30 downto 21) & '0';
 		when others =>
@@ -462,7 +449,6 @@ begin
 	-------------------------------------------------------------------------------
 	-- Jump Adress Calculation
 	-------------------------------------------------------------------------------
-	-- TODO: Exception if Adress is missaligned
 	if R.curInst(6 downto 0) = cOpIJumpReg then  -- JAL or JALR
 		vJumpAdr := vAluRes;
 	else
@@ -664,14 +650,13 @@ begin
 	else
 		vRegWriteData := vDataMemReadData;
 	end if;
-		-- Mux WriteRegSrc1
+	-- Mux WriteRegSrc1
 	if R.jumpToAdr = cNoJump then
 		NxR.regWriteData <= vRegWriteData;
 	else
 		NxR.regWriteData <= vPCPlus4;
 	end if;
 
-	-- TODO: Change to single mux
 	-- Mux PCInc
 	if R.incPC = cNoIncPC then
 		vNextPC := R.curPC;

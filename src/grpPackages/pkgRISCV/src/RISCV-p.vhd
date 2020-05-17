@@ -89,8 +89,8 @@ constant cMTrapRet		: aFunct12 := "001100000010";
 -------------------------------------------------------------------------------
 -- Control Unit
 -------------------------------------------------------------------------------
-type aControlUnitState is (	Fetch, ReadReg, Calc, DataAccess0, DataAccess1, CheckJump, 
-							WriteReg, Wait0, Wait1, Trap);
+type aControlUnitState is (	Fetch, ReadReg, Calc, DataAccess0, DataAccess1, 
+							CheckJump, WriteReg, Wait0, Wait1, Trap);
 
 constant cMemToRegALU		: aCtrlSignal := '0';
 constant cMemToRegMem		: aCtrlSignal := '1';
