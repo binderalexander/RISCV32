@@ -89,7 +89,7 @@ constant cMTrapRet		: aFunct12 := "001100000010";
 -------------------------------------------------------------------------------
 -- Control Unit
 -------------------------------------------------------------------------------
-type aControlUnitState is (	Fetch, ReadReg, Calc, DataAccess0, DataAccess1, 
+type aControlUnitState is (	Fetch, ReadReg, Calc, DataAccess0, DataAccess1,
 							CheckJump, WriteReg, Wait0, Wait1, Trap);
 
 constant cMemToRegALU		: aCtrlSignal := '0';
@@ -97,6 +97,7 @@ constant cMemToRegMem		: aCtrlSignal := '1';
 
 constant cNoJump			: aCtrlSignal := '0';
 constant cJump				: aCtrlSignal := '1';
+
 constant cNoIncPC			: aCtrlSignal := '0';
 constant cIncPC				: aCtrlSignal := '1';
 
@@ -238,7 +239,6 @@ type aRegSet is record
 	-- signals for CSR
 	csrReg						: aCsrSet;
 	csrRead						: aCtrlSignal;
-	csrReadData					: aRegValue;
 	csrWriteMode				: aCtrl2Signal;
 	csrWriteData				: aRegValue;
 end record aRegSet;
@@ -270,7 +270,6 @@ constant cInitValRegSet : aRegSet := (
 
 	csrReg			=> (others => (others => '0')),
 	csrRead			=> '0',
-	csrReadData		=> (others => '0'),
 	csrWriteMode	=> (others => '0'),
 	csrWriteData	=> (others => '0')
 );

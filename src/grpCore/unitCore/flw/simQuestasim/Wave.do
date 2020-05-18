@@ -44,6 +44,7 @@ add wave -noupdate -radix hexadecimal /tbcore/UUT/Comb/vNextPC
 add wave -noupdate -radix hexadecimal /tbcore/UUT/Comb/vJumpAdr
 add wave -noupdate -radix hexadecimal /tbcore/UUT/Comb/vDataMemReadData
 add wave -noupdate /tbcore/UUT/Comb/vDataMemByteEnable
+add wave -noupdate -radix hexadecimal /tbcore/UUT/Comb/vCsrReadData
 add wave -noupdate -divider ISATestSignals
 add wave -noupdate /tbcore/test_finished
 add wave -noupdate /tbcore/test_finished_ack

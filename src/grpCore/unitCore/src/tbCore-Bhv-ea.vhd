@@ -91,7 +91,7 @@ ReadROM: process is
 begin
 
     if testMode = SingleFile then
-        file_open(char_file, "../../../../../test/rv32ui-p-sh.bin");
+        file_open(char_file, "../../../../../test/rv32mi-p-csr.bin");
         while not endfile(char_file) and (i < MemSize) loop
             read(char_file, char_v);
             Memory(i) := std_logic_vector(to_unsigned(character'pos(char_v), cByte));
@@ -147,7 +147,7 @@ begin
         wait;
 
     end if;
-    
+
     wait;
 end process ReadROM;
 
@@ -172,7 +172,7 @@ begin
             reset <= '0';
             address_cycle_count := 0;
             test_finished <= '0';
-        else 
+        else
             reset <= 'Z';
         end if;
     end if;
@@ -217,7 +217,7 @@ begin
                 end loop;
             elsif dataByteEnable = "0001" then
                 Memory(to_integer(unsigned(dataAddress))) := dataWriteData(cByte-1 downto 0);
-            end if;      
+            end if;
         end if;
     end if;
 end process DataMemory;

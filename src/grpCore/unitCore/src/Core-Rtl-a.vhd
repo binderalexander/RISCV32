@@ -60,7 +60,7 @@ d_readdata_remapped(7  downto  0)	<= avm_d_readdata(31 downto 24);
 avm_d_writedata(31 downto 24)		<= d_writedata_remapped( 7 downto  0);
 avm_d_writedata(23 downto 16)		<= d_writedata_remapped(15 downto  8);
 avm_d_writedata(15 downto  8)		<= d_writedata_remapped(23 downto 16);
-avm_d_writedata( 7 downto  0)		<= d_writedata_remapped(31 downto 24);	
+avm_d_writedata( 7 downto  0)		<= d_writedata_remapped(31 downto 24);
 
 Registers: process (csi_clk, rsi_reset_n)
 begin
@@ -88,6 +88,7 @@ Comb: process (R, RegFile, i_readdata_remapped, d_readdata_remapped)
 	variable vDataMemReadData   : aWord         				:= (others=>'0');
 	variable vDataMemWriteData	: aWord							:= (others=>'0');
 	variable vDataMemByteEnable : std_logic_vector(3 downto 0) 	:= (others=>'0');
+	variable vCsrReadData		: aRegValue						:= (others=>'0');
 
 begin
 
@@ -110,6 +111,7 @@ begin
 	vDataMemReadData	:= (others=>'0');	-- data memory read data
 	vDataMemWriteData	:= (others=>'0');	-- data memory write data
 	vDataMemByteEnable	:= (others=>'0');	-- data memory byte enable
+	vCsrReadData		:= (others=>'0');	-- csr register read data
 
 	-------------------------------------------------------------------------------
 	-- Control Unit
@@ -479,9 +481,7 @@ begin
 	-------------------------------------------------------------------------------
 	if R.csrRead = '1' then
 		if validAddrCSR(R.curInst(31 downto 20)) then
-			NxR.csrReadData <= R.csrReg(to_integer(unsigned(R.curInst(31 downto 20))));
-		else
-			NxR.csrReadData <= (others => '0');
+			vCsrReadData := R.csrReg(to_integer(unsigned(R.curInst(31 downto 20))));
 		end if;
 	end if;
 
@@ -491,9 +491,9 @@ begin
 				when cModeWrite =>
 					NxR.csrReg(to_integer(unsigned(R.curInst(31 downto 20)))) <= R.csrWriteData;
 				when cModeSet =>
-					NxR.csrReg(to_integer(unsigned(R.curInst(31 downto 20)))) <= R.csrWriteData or R.csrReadData;
+					NxR.csrReg(to_integer(unsigned(R.curInst(31 downto 20)))) <= R.csrWriteData or vCsrReadData;
 				when cModeClear =>
-					NxR.csrReg(to_integer(unsigned(R.curInst(31 downto 20)))) <= (not R.csrWriteData) and R.csrReadData;
+					NxR.csrReg(to_integer(unsigned(R.curInst(31 downto 20)))) <= (not R.csrWriteData) and vCsrReadData;
 				when others =>
 					null;
 			end case;
@@ -502,33 +502,33 @@ begin
 
 	-------------------------------------------------------------------------------
 	-- Data Memory
-	-------------------------------------------------------------------------------	
+	-------------------------------------------------------------------------------
 	case R.curInst(14 downto 12) is
-		when cMemByte => 				
+		when cMemByte =>
 			vDataMemReadData := std_ulogic_vector(
 				resize(signed(d_readdata_remapped(cByte-1 downto 0)), cBitWidth));
 			vDataMemWriteData(4*cByte-1 downto 3*cByte) := vRegReadData2(cByte-1 downto 0);
 			vDataMemByteEnable := cEnableByte;
 
-		when cMemHalfWord => 
+		when cMemHalfWord =>
 			vDataMemReadData := std_ulogic_vector(
 				resize(signed(d_readdata_remapped(2*cByte-1 downto 0)), cBitWidth));
 			vDataMemWriteData(4*cByte-1 downto 2*cByte) := vRegReadData2(2*cByte-1 downto 0);
 			vDataMemByteEnable := cEnableHalfWord;
 
-		when cMemWord => 
+		when cMemWord =>
 			vDataMemReadData := std_ulogic_vector(
 				resize(signed(d_readdata_remapped(4*cByte-1 downto 0)), cBitWidth));
 			vDataMemWriteData := vRegReadData2;
 			vDataMemByteEnable := cEnableWord;
 
-		when cMemUnsignedByte => 
+		when cMemUnsignedByte =>
 			vDataMemReadData := std_ulogic_vector(resize(unsigned(
 				d_readdata_remapped(cByte-1 downto 0)), cBitWidth));
 			vDataMemWriteData(4*cByte-1 downto 3*cByte) := vRegReadData2(cByte-1 downto 0);
 			vDataMemByteEnable := cEnableByte;
 
-		when cMemUnsignedHalfWord => 
+		when cMemUnsignedHalfWord =>
 			vDataMemReadData := std_ulogic_vector(resize(unsigned(
 				d_readdata_remapped(2*cByte-1 downto 0)), cBitWidth));
 			vDataMemWriteData(4*cByte-1 downto 2*cByte) := vRegReadData2(2*cByte-1 downto 0);
@@ -557,17 +557,15 @@ begin
 		NxR.aluData2 <= vImm;
 	end if;
 
-	-- Mux WriteRegSrc0
-	if R.memToReg = cMemToRegALU then
-		vRegWriteData := vAluRes;
-	else
-		vRegWriteData := vDataMemReadData;
-	end if;
-	-- Mux WriteRegSrc1
-	if R.jumpToAdr = cNoJump then
-		NxR.regWriteData <= vRegWriteData;
-	else
+	-- MUX RegWriteData
+	if R.jumpToAdr = cJump then
 		NxR.regWriteData <= vPCPlus4;
+	elsif R.memToReg = cMemToRegMem then
+			NxR.regWriteData <= vDataMemReadData;
+	elsif R.csrRead = '1' then
+		NxR.regWriteData <= vCsrReadData;
+	else
+		NxR.regWriteData <= vAluRes;
 	end if;
 
 	-- Mux PCInc
