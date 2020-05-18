@@ -28,9 +28,7 @@ architecture rtl of Core is
 	function validAddrCSR(addr : aCsrAddr) return boolean is
 	begin
 		case addr is
-			when 	cCsrUStatus | cCsrUIe | cCsrUTvec |
-					cCsrUScratch | cCsrUEpc | cCsrUCause | cCsrUTval | cCsrUIp |
-					cCsrMVendorId | cCsrMArchId | cCsrMImpId | cCsrMHartId |
+			when 	cCsrMVendorId | cCsrMArchId | cCsrMImpId | cCsrMHartId |
 					cCsrMStatus | cCsrMIsa | cCsrMEdeleg | cCsrMIdeleg |
 					cCsrMIe | cCsrMTvec | cCsrMCounteren |
 					cCsrMScratch | cCsrMEpc | cCsrMCause | cCsrMTval | cCsrMIp |

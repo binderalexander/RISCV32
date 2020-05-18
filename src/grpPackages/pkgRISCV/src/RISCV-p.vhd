@@ -158,16 +158,6 @@ constant cModeClear		: aCtrl2Signal := "01";
 constant cModeSet		: aCtrl2Signal := "10";
 constant cModeWrite		: aCtrl2Signal := "11";
 
--- user trap setup
-constant cCsrUStatus	: aCsrAddr := x"000";
-constant cCsrUIe		: aCsrAddr := x"004";
-constant cCsrUTvec		: aCsrAddr := x"005";
--- user trap handling
-constant cCsrUScratch	: aCsrAddr := x"040";
-constant cCsrUEpc		: aCsrAddr := x"041";
-constant cCsrUCause		: aCsrAddr := x"042";
-constant cCsrUTval		: aCsrAddr := x"043";
-constant cCsrUIp		: aCsrAddr := x"044";
 -- machine information registers
 constant cCsrMVendorId	: aCsrAddr := x"F11";
 constant cCsrMArchId	: aCsrAddr := x"F12";
