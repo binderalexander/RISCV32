@@ -24,25 +24,6 @@ architecture rtl of Core is
 	signal d_readdata_remapped 		: std_logic_vector(cBitWidth-1 downto 0);
 	signal d_writedata_remapped		: std_logic_vector(cBitWidth-1 downto 0);
 
-
-	function validAddrCSR(addr : aCsrAddr) return boolean is
-	begin
-		case addr is
-			when 	cCsrMVendorId | cCsrMArchId | cCsrMImpId | cCsrMHartId |
-					cCsrMStatus | cCsrMIsa | cCsrMEdeleg | cCsrMIdeleg |
-					cCsrMIe | cCsrMTvec | cCsrMCounteren |
-					cCsrMScratch | cCsrMEpc | cCsrMCause | cCsrMTval | cCsrMIp |
-					cCsrPmpcfg0 | cCsrPmpcfg1 | cCsrPmpcfg2 | cCsrPmpcfg3 |
-					cCsrPmpaddr0 | cCsrPmpaddr1 | cCsrPmpaddr2 | cCsrPmpaddr3 |
-					cCsrPmpaddr4 | cCsrPmpaddr5 | cCsrPmpaddr6 | cCsrPmpaddr7 |
-					cCsrPmpaddr8 | cCsrPmpaddr9 | cCsrPmpaddr10 | cCsrPmpaddr11 |
-					cCsrPmpaddr12 | cCsrPmpaddr13 | cCsrPmpaddr14 | cCsrPmpaddr15 =>
-				return true;
-			when others =>
-				return false;
-		end case;
-	end function;
-
 begin
 
 -- remap bus signals to internal representation
@@ -76,7 +57,6 @@ end process;
 Comb: process (R, RegFile, i_readdata_remapped, d_readdata_remapped)
 	variable vRegReadData1      : aRegValue     				:= (others=>'0');
 	variable vRegReadData2      : aRegValue     				:= (others=>'0');
-	variable vRegWriteData      : aRegValue     				:= (others=>'0');
 	variable vRawAluRes         : aRawALUValue  				:= (others=>'0');
 	variable vAluRes            : aALUValue     				:= (others=>'0');
 	variable vAluSrc1           : aCtrl2Signal  				:= (others=>'0');
@@ -88,6 +68,7 @@ Comb: process (R, RegFile, i_readdata_remapped, d_readdata_remapped)
 	variable vDataMemReadData   : aWord         				:= (others=>'0');
 	variable vDataMemWriteData	: aWord							:= (others=>'0');
 	variable vDataMemByteEnable : std_logic_vector(3 downto 0) 	:= (others=>'0');
+	variable vCsrAddrMapped		: integer						:= 255;
 	variable vCsrReadData		: aRegValue						:= (others=>'0');
 
 begin
@@ -99,7 +80,6 @@ begin
 	-- default variable values
 	vRegReadData1       := (others=>'0');   -- register file read data 1
 	vRegReadData2       := (others=>'0');   -- register file read data 2
-	vRegWriteData       := (others=>'0');   -- register file write data
 	vRawAluRes          := (others=>'0');   -- alu result including overflow bit
 	vAluRes				:= (others=>'0');	-- alu result truncated
 	vAluSrc1            := (others=>'0');   -- alu input 1 mux
@@ -111,6 +91,7 @@ begin
 	vDataMemReadData	:= (others=>'0');	-- data memory read data
 	vDataMemWriteData	:= (others=>'0');	-- data memory write data
 	vDataMemByteEnable	:= (others=>'0');	-- data memory byte enable
+	vCsrAddrMapped		:= 255;				-- csr address mapped into linear space
 	vCsrReadData		:= (others=>'0');	-- csr register read data
 
 	-------------------------------------------------------------------------------
@@ -479,21 +460,23 @@ begin
 	-------------------------------------------------------------------------------
 	-- CSR Unit
 	-------------------------------------------------------------------------------
+	vCsrAddrMapped := mapCsrAddr(R.curInst(31 downto 20));
+
 	if R.csrRead = '1' then
-		if validAddrCSR(R.curInst(31 downto 20)) then
-			vCsrReadData := R.csrReg(to_integer(unsigned(R.curInst(31 downto 20))));
+		if mapCsrAddrValid(vCsrAddrMapped) then
+			vCsrReadData := R.csrReg(vCsrAddrMapped);
 		end if;
 	end if;
 
 	if R.csrWriteMode /= cModeNoWrite then
-		if validAddrCSR(R.curInst(31 downto 20)) then
+		if mapCsrAddrValid(vCsrAddrMapped) then
 			case R.csrWriteMode is
 				when cModeWrite =>
-					NxR.csrReg(to_integer(unsigned(R.curInst(31 downto 20)))) <= R.csrWriteData;
+					NxR.csrReg(vCsrAddrMapped) <= R.csrWriteData;
 				when cModeSet =>
-					NxR.csrReg(to_integer(unsigned(R.curInst(31 downto 20)))) <= R.csrWriteData or vCsrReadData;
+					NxR.csrReg(vCsrAddrMapped) <= R.csrWriteData or vCsrReadData;
 				when cModeClear =>
-					NxR.csrReg(to_integer(unsigned(R.curInst(31 downto 20)))) <= (not R.csrWriteData) and vCsrReadData;
+					NxR.csrReg(vCsrAddrMapped) <= (not R.csrWriteData) and vCsrReadData;
 				when others =>
 					null;
 			end case;

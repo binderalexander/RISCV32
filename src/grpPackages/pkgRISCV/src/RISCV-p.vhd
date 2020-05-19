@@ -25,6 +25,7 @@ constant cBitWidth		: natural := 32;
 constant cByteWidth     : natural := cBitWidth/cByte;
 constant cInstWidth		: natural := 32;
 constant cCsrAddrWidth	: natural := 12;
+constant cCsrAddrCnt	: natural := 36;
 
 subtype aInst	      	is std_ulogic_vector(cInstWidth - 1		downto 0);
 subtype aWord           is std_ulogic_vector(cBitWidth - 1 		downto 0);
@@ -200,7 +201,7 @@ constant cCsrPmpaddr13	: aCsrAddr := x"3BD";
 constant cCsrPmpaddr14	: aCsrAddr := x"3BE";
 constant cCsrPmpaddr15	: aCsrAddr := x"3BF";
 
-type aCsrSet is array (2**cCsrAddrWidth - 1 downto 0) of aRegValue;
+type aCsrSet is array (cCsrAddrCnt-1 downto 0) of aRegValue;
 
 -------------------------------------------------------------------------------
 -- RegSet
@@ -274,5 +275,73 @@ constant cInitValRegSet : aRegSet := (
 	csrWriteData	=> (others => '0')
 );
 
+------------------------------------------------------------------------------
+-- Function Definitions
+------------------------------------------------------------------------------
+-- function mapCsrAddr maps CsrAddr to linear space
+function mapCsrAddr(addr : aCsrAddr) return integer;
+-- functio mapCsrAddrValid checks if the mapped address is in allowed region
+function mapCsrAddrValid(mapAddr : integer) return boolean;
+
+end RISCV;
+
+package body RISCV is
+
+function mapCsrAddr(addr : aCsrAddr) return integer is
+begin
+	case addr is
+		-- machine information registers
+		when cCsrMVendorId 		=> return 0;
+		when cCsrMArchId 		=> return 1;
+		when cCsrMImpId 		=> return 2;
+		when cCsrMHartId 		=> return 3;
+		-- machine trap setup
+		when cCsrMStatus		=> return 4;
+		when cCsrMIsa			=> return 5;
+		when cCsrMEdeleg		=> return 6;
+		when cCsrMIdeleg		=> return 7;
+		when cCsrMIe			=> return 8;
+		when cCsrMTvec			=> return 9;
+		when cCsrMCounteren		=> return 10;
+		-- machine trap handling
+		when cCsrMScratch		=> return 11;
+		when cCsrMEpc			=> return 12;
+		when cCsrMCause			=> return 13;
+		when cCsrMTval			=> return 14;
+		when cCsrMIp			=> return 15;
+		-- machine memory protection
+		when cCsrPmpcfg0		=> return 16;
+		when cCsrPmpcfg1		=> return 17;
+		when cCsrPmpcfg2		=> return 18;
+		when cCsrPmpcfg3		=> return 19;
+		when cCsrPmpAddr0		=> return 20;
+		when cCsrPmpAddr1		=> return 21;
+		when cCsrPmpAddr2		=> return 22;
+		when cCsrPmpAddr3		=> return 23;
+		when cCsrPmpAddr4		=> return 24;
+		when cCsrPmpAddr5		=> return 25;
+		when cCsrPmpAddr6		=> return 26;
+		when cCsrPmpAddr7		=> return 27;
+		when cCsrPmpAddr8		=> return 28;
+		when cCsrPmpAddr9		=> return 29;
+		when cCsrPmpAddr10		=> return 30;
+		when cCsrPmpAddr11		=> return 31;
+		when cCsrPmpAddr12		=> return 32;
+		when cCsrPmpAddr13		=> return 33;
+		when cCsrPmpAddr14		=> return 34;
+		when cCsrPmpAddr15		=> return 35;
+
+		when others => return 255;	--invalid address
+	end case;
+end function;
+
+function mapCsrAddrValid(mapAddr : integer) return boolean is
+begin
+	if mapAddr /= 255 then
+		return true;
+	else
+		return false;
+	end if;
+end function;
 
 end RISCV;
